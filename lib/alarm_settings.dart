@@ -8,6 +8,13 @@ class AlarmSettings extends StatefulWidget {
 }
 
 class _AlarmSettingsState extends State<AlarmSettings> {
+  TimeOfDay? selectedTime;
+  TimePickerEntryMode entryMode = TimePickerEntryMode.dial;
+  Orientation? orientation;
+  TextDirection textDirection = TextDirection.ltr;
+  MaterialTapTargetSize tapTargetSize = MaterialTapTargetSize.padded;
+  bool use24HourTime = false;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -37,15 +44,47 @@ class _AlarmSettingsState extends State<AlarmSettings> {
                 borderRadius: BorderRadius.circular(12.0),
                 //color: Colors.black54,
               ),
-              child: Text(
-                "8:30 am",
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 80,
-                  color: Colors.blue,
-                ),
-              )
+              child: ElevatedButton(
+                child: const Text('Open time picker'),
+                onPressed: () async {
+                  final TimeOfDay? time = await showTimePicker(
+                    context: context,
+                    initialTime: selectedTime ?? TimeOfDay.now(),
+                    initialEntryMode: entryMode,
+                    orientation: orientation,
+                    builder: (BuildContext context, Widget? child) {
+                      return Theme(
+                        data: ThemeData.light().copyWith(
+                          primaryColor: Colors.white, // Header color
+                          colorScheme: ColorScheme.light(
+                            primary: Colors.blue, // Accent color
+                            onPrimary: Colors.white, // Text color on header
+                            onSurface: Colors.black, // Text color on body
+                          ),
+                          textButtonTheme: TextButtonThemeData(
+                            style: TextButton.styleFrom(
+                              foregroundColor: Colors.blue, // Button text color
+                            ),
+                          ),
+                        ),
+                        child: child!,
+                      );
+                    },
+                  );
+                  setState(() {
+                    selectedTime = time;
+                  });
+                },
+              ),
+              // child: Text(
+              //   "8:30 am",
+              //   textAlign: TextAlign.center,
+              //   style: TextStyle(
+              //     fontWeight: FontWeight.bold,
+              //     fontSize: 80,
+              //     color: Colors.blue,
+              //   ),
+              // )
             ),
             SizedBox(height: 20),
             Row(
