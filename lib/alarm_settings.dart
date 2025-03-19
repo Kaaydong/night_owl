@@ -27,7 +27,20 @@ class _AlarmSettingsState extends State<AlarmSettings> {
   bool sun = false;
 
   // SLEEP CYCLE STUFF
-  final TextEditingController _controller = TextEditingController(text: "90");
+  bool useAge = false;
+  int sleepCycle = 0;
+  final TextEditingController sleepCycleDurationController = TextEditingController(text: "");
+
+  // TARGET SLEEP STUFF
+  int hours = 0;
+  int minutes = 0;
+  final TextEditingController targetSleepHoursController = TextEditingController(text: "");
+  final TextEditingController targetSleepMinutesController = TextEditingController(text: "");
+
+  // GO-TO SLEEP STUFF
+  bool isReminderEnabled = true;
+  int minutesToSleep = 0;
+  final TextEditingController minutesToSleepController = TextEditingController(text: "");
 
   void updateMon(bool newValue) {
     setState(() {
@@ -62,6 +75,17 @@ class _AlarmSettingsState extends State<AlarmSettings> {
   void updateSun(bool newValue) {
     setState(() {
       sun = newValue; // Update the boolean value
+    });
+  }
+  void updateUseAge(bool newValue) {
+    setState(() {
+      useAge = newValue; // Update the boolean value
+      if (newValue) {
+        sleepCycleDurationController.text = "70";
+      }
+      else {
+        sleepCycleDurationController.text = "";
+      }
     });
   }
 
@@ -185,24 +209,24 @@ class _AlarmSettingsState extends State<AlarmSettings> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          ToggleButton(text: "Mon", value: mon, onChanged: updateMon, width: 70,),
+                          ToggleButton(text: "Mon", value: mon, onChanged: updateMon, width: 70, height: 50,),
                           SizedBox(width: 5,),
-                          ToggleButton(text: "Tue", value: tue, onChanged: updateTue, width: 70,),
+                          ToggleButton(text: "Tue", value: tue, onChanged: updateTue, width: 70, height: 50,),
                           SizedBox(width: 5,),
-                          ToggleButton(text: "Wed", value: wed, onChanged: updateWed, width: 70,),
+                          ToggleButton(text: "Wed", value: wed, onChanged: updateWed, width: 70, height: 50,),
                           SizedBox(width: 5,),
-                          ToggleButton(text: "Thu", value: thu, onChanged: updateThu, width: 70,),
+                          ToggleButton(text: "Thu", value: thu, onChanged: updateThu, width: 70, height: 50,),
                           SizedBox(width: 5,),
-                          ToggleButton(text: "Fri", value: fri, onChanged: updateFri, width: 70,),
+                          ToggleButton(text: "Fri", value: fri, onChanged: updateFri, width: 70, height: 50,),
                         ]
                       ),
                       SizedBox(height: 15,),
                       Row(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            ToggleButton(text: "Sat", value: sat, onChanged: updateSat, width: 150,),
+                            ToggleButton(text: "Sat", value: sat, onChanged: updateSat, width: 150, height: 50,),
                             SizedBox(width: 40,),
-                            ToggleButton(text: "Sun", value: sun, onChanged: updateSun, width: 150,),
+                            ToggleButton(text: "Sun", value: sun, onChanged: updateSun, width: 150, height: 50,),
                           ]
                       ),
                     ],
@@ -234,7 +258,7 @@ class _AlarmSettingsState extends State<AlarmSettings> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        "Sleep Cycle Duration (mins)",
+                        "Sleep Cycle Duration",
                         style: const TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 25,
@@ -242,41 +266,345 @@ class _AlarmSettingsState extends State<AlarmSettings> {
                         ),
                       ),
                       SizedBox(height: 7,),
-                      TextField(
-                        controller: _controller,
-                        keyboardType: TextInputType.number, // Numeric keyboard
-                        inputFormatters: [
-                          FilteringTextInputFormatter.digitsOnly,
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Container(
+                            width: 220,
+                            height: 60,
+                            child: TextField(
+                              controller: sleepCycleDurationController,
+                              keyboardType: TextInputType.number, // Numeric keyboard
+                              inputFormatters: [
+                                FilteringTextInputFormatter.digitsOnly,
+                              ],
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 20,
+                                color: Colors.white54,
+                              ),
+                              decoration: InputDecoration(
+                                filled: true,
+                                fillColor: Colors.blueGrey,
+                                hintText: 'Enter Cycle Duration',
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12.0),
+                                  borderSide: BorderSide(
+                                    color: Colors.white30, // Border color when not focused
+                                    width: 2.0,
+                                  ),
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12.0),
+                                  borderSide: BorderSide(
+                                    color: Colors.white30, // Border color when focused
+                                    width: 2.0,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                          SizedBox(width: 16,),
+                          Container(
+                            width: 100,
+                            height: 60,
+                            child: Align(
+                              alignment: Alignment.bottomLeft,
+                              child: Text(
+                                "Minutes",
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 25,
+                                  color: Colors.white54,
+                                ),
+                              ),
+                            ),
+                          ),
                         ],
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 20,
-                          color: Colors.white54,
-                        ),
-                        decoration: InputDecoration(
-                          filled: true,
-                          fillColor: Colors.blueGrey,
-                          hintText: 'Enter Sleep Cycle in Minutes',
-                          enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(12.0),
-                            borderSide: BorderSide(
-                              color: Colors.blueGrey, // Border color when not focused
-                              width: 2.0,
-                            ),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(12.0),
-                            borderSide: BorderSide(
-                              color: Colors.blueGrey, // Border color when focused
-                              width: 2.0,
-                            ),
-                          ),
-                        ),
                       ),
                       SizedBox(height: 15),
+                      Center(
+                        child: ToggleButton(
+                          text: "Determine with Age",
+                          value: useAge,
+                          onChanged: updateUseAge,
+                          width: 300,
+                          height: 30,
+                        ),
+                      )
                     ],
                   ),
                 )
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: Container(
+                height: 220,
+                padding: const EdgeInsets.all(4.0),
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.black38, width: 2.0),
+                  borderRadius: BorderRadius.circular(14.0),
+                  color: Color(0xFF123456),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.4),
+                      spreadRadius: 5,
+                      blurRadius: 7,
+                      offset: Offset(0, 3),
+                    ),
+                  ],
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 10, left: 15, right: 15),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Target Sleep Amount",
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 25,
+                          color: Colors.white54,
+                        ),
+                      ),
+                      SizedBox(height: 7,),
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Container(
+                            width: 220,
+                            height: 60,
+                            child: TextField(
+                              controller: targetSleepHoursController,
+                              keyboardType: TextInputType.number, // Numeric keyboard
+                              inputFormatters: [
+                                FilteringTextInputFormatter.digitsOnly,
+                              ],
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 20,
+                                color: Colors.white54,
+                              ),
+                              decoration: InputDecoration(
+                                filled: true,
+                                fillColor: Colors.blueGrey,
+                                hintText: 'Enter Hours',
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12.0),
+                                  borderSide: BorderSide(
+                                    color: Colors.white30, // Border color when not focused
+                                    width: 2.0,
+                                  ),
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12.0),
+                                  borderSide: BorderSide(
+                                    color: Colors.white30, // Border color when focused
+                                    width: 2.0,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                          SizedBox(width: 16,),
+                          Container(
+                            width: 100,
+                            height: 60,
+                            child: Align(
+                              alignment: Alignment.bottomLeft,
+                              child: Text(
+                                "Hours",
+                                style: const TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 25,
+                                  color: Colors.white54,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 15),
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Container(
+                            width: 220,
+                            height: 60,
+                            child: TextField(
+                              controller: targetSleepMinutesController,
+                              keyboardType: TextInputType.number, // Numeric keyboard
+                              inputFormatters: [
+                                FilteringTextInputFormatter.digitsOnly,
+                              ],
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 20,
+                                color: Colors.white54,
+                              ),
+                              decoration: InputDecoration(
+                                filled: true,
+                                fillColor: Colors.blueGrey,
+                                hintText: 'Enter Minutes',
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12.0),
+                                  borderSide: BorderSide(
+                                    color: Colors.white30, // Border color when not focused
+                                    width: 2.0,
+                                  ),
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12.0),
+                                  borderSide: BorderSide(
+                                    color: Colors.white30, // Border color when focused
+                                    width: 2.0,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                          SizedBox(width: 16,),
+                          Container(
+                            width: 100,
+                            height: 60,
+                            child: Align(
+                              alignment: Alignment.bottomLeft,
+                              child: Text(
+                                "Minutes",
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 25,
+                                  color: Colors.white54,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                )
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: Container(
+                height: 200,
+                padding: const EdgeInsets.all(4.0),
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.black38, width: 2.0),
+                  borderRadius: BorderRadius.circular(14.0),
+                  color: isReminderEnabled ? Color(0xFF123456): Colors.white10,
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.4),
+                      spreadRadius: 5,
+                      blurRadius: 7,
+                      offset: Offset(0, 3),
+                    ),
+                  ],
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 10, left: 15, right: 15),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Go-To Sleep Reminder",
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 25,
+                          color: isReminderEnabled ? Colors.white54: Colors.white30,
+                        ),
+                      ),
+                      SizedBox(height: 7,),
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Container(
+                            width: 220,
+                            height: 60,
+                            child: TextField(
+                              controller: minutesToSleepController,
+                              keyboardType: TextInputType.number, // Numeric keyboard
+                              inputFormatters: [
+                                FilteringTextInputFormatter.digitsOnly,
+                              ],
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 20,
+                                color: Colors.white54,
+                              ),
+                              decoration: InputDecoration(
+                                filled: true,
+                                fillColor: isReminderEnabled ? Colors.blueGrey: Colors.white30,
+                                hintText: 'Enter Minutes',
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12.0),
+                                  borderSide: BorderSide(
+                                    color: Colors.white30, // Border color when not focused
+                                    width: 2.0,
+                                  ),
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12.0),
+                                  borderSide: BorderSide(
+                                    color: Colors.white30, // Border color when focused
+                                    width: 2.0,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                          SizedBox(width: 16,),
+                          SizedBox(
+                            width: 100,
+                            height: 60,
+                            child: Align(
+                              alignment: Alignment.bottomLeft,
+                              child: Text(
+                                "Minutes",
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 25,
+                                  color: isReminderEnabled ? Colors.white54: Colors.white30,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 25),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            isReminderEnabled ? "Enabled": "Disabled",
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 25,
+                              color: isReminderEnabled ? Colors.white54: Colors.white30,
+                            ),
+                          ),
+                          SizedBox(width: 10,),
+                          Switch(
+                            value: isReminderEnabled,
+                            onChanged: (value) {
+                              setState(() {
+                                isReminderEnabled = value;
+                              });
+                            },
+                            activeColor: Colors.white, // Color of the switch handle when on
+                            activeTrackColor: Colors.blueGrey, // Background color when switch is on
+                            inactiveTrackColor: Colors.white10, // Background color when switch is off
+                            inactiveThumbColor: Colors.black87, // Color of the switch handle when off
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
               ),
             ),
           ],
@@ -291,6 +619,7 @@ class ToggleButton extends StatefulWidget {
   final bool value;
   final ValueChanged<bool> onChanged;
   final double width;
+  final double height;
   
   const ToggleButton({
     super.key,
@@ -298,6 +627,7 @@ class ToggleButton extends StatefulWidget {
     required this.value,
     required this.onChanged,
     required this.width,
+    required this.height,
   });
 
   @override
@@ -310,7 +640,7 @@ class _ToggleButtonState extends State<ToggleButton> {
     return ElevatedButton(
       onPressed: () => widget.onChanged(!widget.value), // Toggle the value
       style: ElevatedButton.styleFrom(
-        minimumSize: Size(widget.width, 50),
+        minimumSize: Size(widget.width, widget.height),
         backgroundColor: widget.value ? Colors.blueGrey: Colors.white10,
         padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
         shape: RoundedRectangleBorder(
