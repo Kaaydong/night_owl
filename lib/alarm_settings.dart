@@ -42,6 +42,11 @@ class _AlarmSettingsState extends State<AlarmSettings> {
   int minutesToSleep = 0;
   final TextEditingController minutesToSleepController = TextEditingController(text: "");
 
+  // Snooze STUFF
+  bool isSnoozeEnabled = true;
+  int snoozeDuration = 0;
+  final TextEditingController snoozeTimeController = TextEditingController(text: "");
+
   void updateMon(bool newValue) {
     setState(() {
       mon = newValue; // Update the boolean value
@@ -87,6 +92,9 @@ class _AlarmSettingsState extends State<AlarmSettings> {
         sleepCycleDurationController.text = "";
       }
     });
+  }
+  void submitSettings() {
+
   }
 
   @override
@@ -273,6 +281,7 @@ class _AlarmSettingsState extends State<AlarmSettings> {
                             width: 220,
                             height: 60,
                             child: TextField(
+                              readOnly: useAge,
                               controller: sleepCycleDurationController,
                               keyboardType: TextInputType.number, // Numeric keyboard
                               inputFormatters: [
@@ -526,6 +535,7 @@ class _AlarmSettingsState extends State<AlarmSettings> {
                             width: 220,
                             height: 60,
                             child: TextField(
+                              readOnly: !isReminderEnabled,
                               controller: minutesToSleepController,
                               keyboardType: TextInputType.number, // Numeric keyboard
                               inputFormatters: [
@@ -607,6 +617,170 @@ class _AlarmSettingsState extends State<AlarmSettings> {
                 ),
               ),
             ),
+            Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: Container(
+                height: 200,
+                padding: const EdgeInsets.all(4.0),
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.black38, width: 2.0),
+                  borderRadius: BorderRadius.circular(14.0),
+                  color: isSnoozeEnabled ? Color(0xFF123456): Colors.white10,
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.4),
+                      spreadRadius: 5,
+                      blurRadius: 7,
+                      offset: Offset(0, 3),
+                    ),
+                  ],
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 10, left: 15, right: 15),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Snooze Duration",
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 25,
+                          color: isSnoozeEnabled ? Colors.white54: Colors.white30,
+                        ),
+                      ),
+                      SizedBox(height: 7,),
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Container(
+                            width: 220,
+                            height: 60,
+                            child: TextField(
+                              readOnly: !isSnoozeEnabled,
+                              controller: minutesToSleepController,
+                              keyboardType: TextInputType.number, // Numeric keyboard
+                              inputFormatters: [
+                                FilteringTextInputFormatter.digitsOnly,
+                              ],
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 20,
+                                color: Colors.white54,
+                              ),
+                              decoration: InputDecoration(
+                                filled: true,
+                                fillColor: isSnoozeEnabled ? Colors.blueGrey: Colors.white30,
+                                hintText: 'Enter Minutes',
+                                enabledBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12.0),
+                                  borderSide: BorderSide(
+                                    color: Colors.white30, // Border color when not focused
+                                    width: 2.0,
+                                  ),
+                                ),
+                                focusedBorder: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(12.0),
+                                  borderSide: BorderSide(
+                                    color: Colors.white30, // Border color when focused
+                                    width: 2.0,
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                          SizedBox(width: 16,),
+                          SizedBox(
+                            width: 100,
+                            height: 60,
+                            child: Align(
+                              alignment: Alignment.bottomLeft,
+                              child: Text(
+                                "Minutes",
+                                style: TextStyle(
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 25,
+                                  color: isSnoozeEnabled ? Colors.white54: Colors.white30,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      SizedBox(height: 25),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            isSnoozeEnabled ? "Enabled": "Disabled",
+                            style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 25,
+                              color: isSnoozeEnabled ? Colors.white54: Colors.white30,
+                            ),
+                          ),
+                          SizedBox(width: 10,),
+                          Switch(
+                            value: isSnoozeEnabled,
+                            onChanged: (value) {
+                              setState(() {
+                                isSnoozeEnabled = value;
+                              });
+                            },
+                            activeColor: Colors.white, // Color of the switch handle when on
+                            activeTrackColor: Colors.blueGrey, // Background color when switch is on
+                            inactiveTrackColor: Colors.white10, // Background color when switch is off
+                            inactiveThumbColor: Colors.black87, // Color of the switch handle when off
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: Container(
+                height: 100,
+                padding: const EdgeInsets.all(4.0),
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.black38, width: 2.0),
+                  borderRadius: BorderRadius.circular(14.0),
+                  color: isSnoozeEnabled ? Color(0xFF123456): Colors.white10,
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.4),
+                      spreadRadius: 5,
+                      blurRadius: 7,
+                      offset: Offset(0, 3),
+                    ),
+                  ],
+                ),
+                child: Center(
+                  child: ElevatedButton(
+                    onPressed: () => submitSettings,
+                    style: ElevatedButton.styleFrom(
+                      fixedSize: Size(350, 65),
+                      backgroundColor: Colors.blueGrey,
+                      padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(90),
+                      ),
+                    ),
+                    child: Text(
+                      "Submit",
+                      textAlign: TextAlign.left,
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 24,
+                        color: Color(0xFFC6C0C0),
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            SizedBox(height: 30,),
           ],
         ),
       )

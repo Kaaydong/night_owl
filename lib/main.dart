@@ -8,10 +8,17 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
+    return MaterialApp(
       title: 'Night Owl',
       themeMode: ThemeMode.system,
-      home: GreetingPage(),
+      theme: ThemeData(
+        textSelectionTheme: TextSelectionThemeData(
+          cursorColor: Colors.white54,
+          selectionColor: Colors.white54,
+          selectionHandleColor: Colors.white54,
+        ),
+      ),
+      home: const GreetingPage(),
     );
   }
 }
