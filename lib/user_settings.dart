@@ -240,7 +240,7 @@ class _TwentyFourHourSelectorState extends State<TwentyFourHourSelector> {
         decoration: BoxDecoration(
           border: Border.all(color: Colors.black38, width: 2.0),
           borderRadius: BorderRadius.circular(14.0),
-          color: Color(0xFF123456),
+          color: isSwitched ? Color(0xFF123456): Colors.white10,
           boxShadow: [
             BoxShadow(
               color: Colors.black.withValues(alpha: 0.4),

@@ -55,7 +55,7 @@ class _State extends State<GreetingPage> {
                   );
                 },
                 child: Text(
-                  "Login".toUpperCase(),
+                  "Guest".toUpperCase(),
                   style: const TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 30,
@@ -80,7 +80,7 @@ class _State extends State<GreetingPage> {
                   );
                 },
                 child: Text(
-                  "Guest".toUpperCase(),
+                  "Login".toUpperCase(),
                   style: const TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 30,

@@ -210,7 +210,7 @@ class _TimerItemState extends State<TimerItem> {
           decoration: BoxDecoration(
             border: Border.all(color: Colors.black38, width: 2.0),
             borderRadius: BorderRadius.circular(14.0),
-            color: isSwitched ? Color(0xFF123456) : Color(0x393A3535),
+            color: isSwitched ? Color(0xFF123456): Colors.white10,
             boxShadow: [
               BoxShadow(
                 color: Colors.black.withValues(alpha: 0.4),
@@ -234,7 +234,7 @@ class _TimerItemState extends State<TimerItem> {
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
                         fontSize: 60,
-                        color: isSwitched ? Color(0xFFC6C0C0): Colors.black54,
+                        color: isSwitched ? Color(0xFFC6C0C0): Colors.white30,
                       ),
                     ),
                     Text(
@@ -260,8 +260,8 @@ class _TimerItemState extends State<TimerItem> {
                   },
                   activeColor: Colors.white, // Color of the switch handle when on
                   activeTrackColor: Colors.blueGrey, // Background color when switch is on
-                  inactiveTrackColor: Colors.white12, // Background color when switch is off
-                  inactiveThumbColor: Colors.white54, // Color of the switch handle when off
+                  inactiveTrackColor: Colors.white10, // Background color when switch is off
+                  inactiveThumbColor: Colors.black87, // Color of the switch handle when off
                 ),
               ),
             ],

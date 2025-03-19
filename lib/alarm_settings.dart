@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class AlarmSettings extends StatefulWidget {
   const AlarmSettings({super.key});
@@ -8,12 +9,61 @@ class AlarmSettings extends StatefulWidget {
 }
 
 class _AlarmSettingsState extends State<AlarmSettings> {
-  TimeOfDay? selectedTime;
+  // TIME PICKER STUFF
+  TimeOfDay? selectedTime = TimeOfDay.now();
   TimePickerEntryMode entryMode = TimePickerEntryMode.dial;
   Orientation? orientation;
   TextDirection textDirection = TextDirection.ltr;
   MaterialTapTargetSize tapTargetSize = MaterialTapTargetSize.padded;
   bool use24HourTime = false;
+
+  // DAY OF WEEK STUFF
+  bool mon = false; // Boolean value to be passed to the button
+  bool tue = false;
+  bool wed = false;
+  bool thu = false;
+  bool fri = false;
+  bool sat = false;
+  bool sun = false;
+
+  // SLEEP CYCLE STUFF
+  final TextEditingController _controller = TextEditingController(text: "90");
+
+  void updateMon(bool newValue) {
+    setState(() {
+      mon = newValue; // Update the boolean value
+    });
+  }
+  void updateTue(bool newValue) {
+    setState(() {
+      tue = newValue; // Update the boolean value
+    });
+  }
+  void updateWed(bool newValue) {
+    setState(() {
+      wed = newValue; // Update the boolean value
+    });
+  }
+  void updateThu(bool newValue) {
+    setState(() {
+      thu = newValue; // Update the boolean value
+    });
+  }
+  void updateFri(bool newValue) {
+    setState(() {
+      fri = newValue; // Update the boolean value
+    });
+  }
+  void updateSat(bool newValue) {
+    setState(() {
+      sat = newValue; // Update the boolean value
+    });
+  }
+  void updateSun(bool newValue) {
+    setState(() {
+      sun = newValue; // Update the boolean value
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -30,316 +80,250 @@ class _AlarmSettingsState extends State<AlarmSettings> {
           ),
         ),
         centerTitle: true,
-        backgroundColor: Colors.blue,
+        backgroundColor: Color(0xFF123456),
       ),
+
       body: Container(
-        padding: const EdgeInsets.all(10.0),
+        margin: const EdgeInsets.symmetric(vertical: 0),
+        decoration: const BoxDecoration(
+          color: Colors.black87,
+        ),
         child: ListView(
           scrollDirection: Axis.vertical,
-          children: <Widget>[
-            Container(
-              height: 120,
-              decoration: BoxDecoration(
-                border: Border.all(color: Colors.black38, width: 3.0),
-                borderRadius: BorderRadius.circular(12.0),
-                //color: Colors.black54,
-              ),
-              child: ElevatedButton(
-                child: const Text('Open time picker'),
-                onPressed: () async {
-                  final TimeOfDay? time = await showTimePicker(
-                    context: context,
-                    initialTime: selectedTime ?? TimeOfDay.now(),
-                    initialEntryMode: entryMode,
-                    orientation: orientation,
-                    builder: (BuildContext context, Widget? child) {
-                      return Theme(
-                        data: ThemeData.light().copyWith(
-                          primaryColor: Colors.white, // Header color
-                          colorScheme: ColorScheme.light(
-                            primary: Colors.blue, // Accent color
-                            onPrimary: Colors.white, // Text color on header
-                            onSurface: Colors.black, // Text color on body
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: Container(
+                height: 340,
+                padding: const EdgeInsets.all(4.0),
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.black38, width: 2.0),
+                  borderRadius: BorderRadius.circular(14.0),
+                  color: Color(0xFF123456),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.4),
+                      spreadRadius: 5,
+                      blurRadius: 7,
+                      offset: Offset(0, 3),
+                    ),
+                  ],
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 20),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Text(
+                        "Alarm Settings",
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 25,
+                          color: Colors.white54,
+                        ),
+                      ),
+                      ElevatedButton(
+                        style: ElevatedButton.styleFrom(
+                          minimumSize: const Size(350,100),
+                          backgroundColor: Colors.blueGrey,
+                          padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(12),
                           ),
-                          textButtonTheme: TextButtonThemeData(
-                            style: TextButton.styleFrom(
-                              foregroundColor: Colors.blue, // Button text color
+                        ),
+                        child: Text(
+                          selectedTime == null ? TimeOfDay.now().format(context) : selectedTime!.format(context),
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 50,
+                            color: Colors.white54,
+                          ),
+                        ),
+                        onPressed: () async {
+                          final TimeOfDay? time = await showTimePicker(
+                            context: context,
+                            initialTime: selectedTime ?? TimeOfDay.now(),
+                            initialEntryMode: entryMode,
+                            orientation: orientation,
+                            builder: (BuildContext context, Widget? child) {
+                              return Theme(
+                                data: ThemeData.light().copyWith(
+                                  timePickerTheme: TimePickerThemeData(
+                                    dayPeriodColor: Colors.blueGrey,
+                                    hourMinuteTextStyle: TextStyle(
+                                      fontSize: 48,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                    helpTextStyle: TextStyle(
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.blueGrey, // Change "Enter Time" text color
+                                    ),
+                                  ),
+                                  colorScheme: ColorScheme.light(
+                                    primary: Colors.blueGrey, // Selected date highlight
+                                    onPrimary: Colors.white54, // Text color on selected date
+                                    onSurface: Colors.blueGrey, // Default text color
+                                    surface: Color(0xFF123456),// Text color on body
+                                  ),
+                                  textButtonTheme: TextButtonThemeData(
+                                    style: TextButton.styleFrom(
+                                      foregroundColor: Colors.white60, // Button text color
+                                    ),
+                                  ),
+                                ),
+                                child: child!,
+                              );
+                            },
+                          );
+                          setState(() {
+                            selectedTime = time;
+                          });
+                        },
+                      ),
+                      SizedBox(height: 15,),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          ToggleButton(text: "Mon", value: mon, onChanged: updateMon, width: 70,),
+                          SizedBox(width: 5,),
+                          ToggleButton(text: "Tue", value: tue, onChanged: updateTue, width: 70,),
+                          SizedBox(width: 5,),
+                          ToggleButton(text: "Wed", value: wed, onChanged: updateWed, width: 70,),
+                          SizedBox(width: 5,),
+                          ToggleButton(text: "Thu", value: thu, onChanged: updateThu, width: 70,),
+                          SizedBox(width: 5,),
+                          ToggleButton(text: "Fri", value: fri, onChanged: updateFri, width: 70,),
+                        ]
+                      ),
+                      SizedBox(height: 15,),
+                      Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            ToggleButton(text: "Sat", value: sat, onChanged: updateSat, width: 150,),
+                            SizedBox(width: 40,),
+                            ToggleButton(text: "Sun", value: sun, onChanged: updateSun, width: 150,),
+                          ]
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: Container(
+                height: 200,
+                padding: const EdgeInsets.all(4.0),
+                decoration: BoxDecoration(
+                  border: Border.all(color: Colors.black38, width: 2.0),
+                  borderRadius: BorderRadius.circular(14.0),
+                  color: Color(0xFF123456),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withValues(alpha: 0.4),
+                      spreadRadius: 5,
+                      blurRadius: 7,
+                      offset: Offset(0, 3),
+                    ),
+                  ],
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.only(top: 10, left: 15, right: 15),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        "Sleep Cycle Duration (mins)",
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 25,
+                          color: Colors.white54,
+                        ),
+                      ),
+                      SizedBox(height: 7,),
+                      TextField(
+                        controller: _controller,
+                        keyboardType: TextInputType.number, // Numeric keyboard
+                        inputFormatters: [
+                          FilteringTextInputFormatter.digitsOnly,
+                        ],
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 20,
+                          color: Colors.white54,
+                        ),
+                        decoration: InputDecoration(
+                          filled: true,
+                          fillColor: Colors.blueGrey,
+                          hintText: 'Enter Sleep Cycle in Minutes',
+                          enabledBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12.0),
+                            borderSide: BorderSide(
+                              color: Colors.blueGrey, // Border color when not focused
+                              width: 2.0,
+                            ),
+                          ),
+                          focusedBorder: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(12.0),
+                            borderSide: BorderSide(
+                              color: Colors.blueGrey, // Border color when focused
+                              width: 2.0,
                             ),
                           ),
                         ),
-                        child: child!,
-                      );
-                    },
-                  );
-                  setState(() {
-                    selectedTime = time;
-                  });
-                },
-              ),
-              // child: Text(
-              //   "8:30 am",
-              //   textAlign: TextAlign.center,
-              //   style: TextStyle(
-              //     fontWeight: FontWeight.bold,
-              //     fontSize: 80,
-              //     color: Colors.blue,
-              //   ),
-              // )
-            ),
-            SizedBox(height: 20),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                OutlinedButton(
-                  style: OutlinedButton.styleFrom(minimumSize: const Size(30,50)),
-                  onPressed: (){
-                  },
-                  child: Text(
-                    "Mon".toUpperCase(),
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 15,
-                      color: Colors.blue,
-                    ),
-                  ),
-                ),
-                OutlinedButton(
-                  style: OutlinedButton.styleFrom(minimumSize: const Size(30,50)),
-                  onPressed: (){
-                  },
-                  child: Text(
-                    "Tue".toUpperCase(),
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 15,
-                      color: Colors.blue,
-                    ),
-                  ),
-                ),
-                OutlinedButton(
-                  style: OutlinedButton.styleFrom(minimumSize: const Size(30,50)),
-                  onPressed: (){
-                  },
-                  child: Text(
-                    "Wed".toUpperCase(),
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 15,
-                      color: Colors.blue,
-                    ),
-                  ),
-                ),
-                OutlinedButton(
-                  style: OutlinedButton.styleFrom(minimumSize: const Size(30,50)),
-                  onPressed: (){
-                  },
-                  child: Text(
-                    "Thr".toUpperCase(),
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 15,
-                      color: Colors.blue,
-                    ),
-                  ),
-                ),
-                OutlinedButton(
-                  style: OutlinedButton.styleFrom(minimumSize: const Size(30,50)),
-                  onPressed: (){
-                  },
-                  child: Text(
-                    "Fri".toUpperCase(),
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 15,
-                      color: Colors.blue,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            SizedBox(height: 10),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                OutlinedButton(
-                  style: OutlinedButton.styleFrom(minimumSize: const Size(150,50)),
-                  onPressed: (){
-                  },
-                  child: Text(
-                    "Sat".toUpperCase(),
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 15,
-                      color: Colors.blue,
-                    ),
-                  ),
-                ),
-                OutlinedButton(
-                  style: OutlinedButton.styleFrom(minimumSize: const Size(150,50)),
-                  onPressed: (){
-                  },
-                  child: Text(
-                    "Sun".toUpperCase(),
-                    style: const TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 15,
-                      color: Colors.blue,
-                    ),
-                  ),
-                ),
-              ],
-            ),
-            SizedBox(height: 80),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                Column(
-                  children: [
-                    Container(
-                      height: 100,
-                      width: 200,
-                      decoration: BoxDecoration(
-                        border: Border.all(color: Colors.black38, width: 2.0),
-                        borderRadius: BorderRadius.circular(12.0),
-                        //color: Colors.black54,
                       ),
-                      child: Text(
-                        "Sleep Cycle Duration",
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 18,
-                          color: Colors.blue,
-                        ),
-                      ),
-                    ),
-                    SizedBox(height: 5),
-                    OutlinedButton(
-                      style: OutlinedButton.styleFrom(minimumSize: const Size(150,35)),
-                      onPressed: (){
-                      },
-                      child: Text(
-                        "Use Average".toUpperCase(),
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 15,
-                          color: Colors.blue,
-                        ),
-                      ),
-                    ),
-                  ],
-                ),
-                SizedBox(width: 10),
-                Column(
-                  children: [
-                    Container(
-                      height: 100,
-                      width: 160,
-                      decoration: BoxDecoration(
-                        border: Border.all(color: Colors.black38, width: 2.0),
-                        borderRadius: BorderRadius.circular(12.0),
-                        //color: Colors.black54,
-                      ),
-                      child: Text(
-                        "Early Alert",
-                        textAlign: TextAlign.center,
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 18,
-                          color: Colors.blue,
-                        ),
-                      ),
-                    ),
-                    SizedBox(height: 5),
-                    Switch(
-                      // This bool value toggles the switch.
-                      value: false,
-                      activeColor: Colors.red,
-                      onChanged: (bool value) {
-                        //
-                      },
-                    ),
-                  ],
-                ),
-              ],
-            ),
-            SizedBox(height: 40),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                Container(
-                  height: 90,
-                  width: 200,
-                  decoration: BoxDecoration(
-                    border: Border.all(color: Colors.black38, width: 2.0),
-                    borderRadius: BorderRadius.circular(12.0),
-                    //color: Colors.black54,
+                      SizedBox(height: 15),
+                    ],
                   ),
-                  child: Text(
-                    "Target Sleep",
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 18,
-                      color: Colors.blue,
-                    ),
-                  ),
-                ),
-                SizedBox(width: 10),
-                SizedBox(width: 160),
-              ],
-            ),
-            SizedBox(height: 10),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                Container(
-                  height: 90,
-                  width: 200,
-                  decoration: BoxDecoration(
-                    border: Border.all(color: Colors.black38, width: 2.0),
-                    borderRadius: BorderRadius.circular(12.0),
-                    //color: Colors.black54,
-                  ),
-                  child: Text(
-                    "Snooze Duration",
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 18,
-                      color: Colors.blue,
-                    ),
-                  ),
-                ),
-                SizedBox(width: 10),
-                Container(
-                  width: 160,
-                  child: Switch(
-                    // This bool value toggles the switch.
-                    value: false,
-                    activeColor: Colors.red,
-                    onChanged: (bool value) {
-                      //
-                    },
-                  ),
-                ),
-              ],
-            ),
-            SizedBox(height: 20),
-            OutlinedButton(
-              style: OutlinedButton.styleFrom(minimumSize: const Size(150,35)),
-              onPressed: (){
-              },
-              child: Text(
-                "Save".toUpperCase(),
-                style: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 15,
-                  color: Colors.blue,
-                ),
+                )
               ),
             ),
           ],
+        ),
+      )
+    );
+  }
+}
+
+class ToggleButton extends StatefulWidget {
+  final String text;
+  final bool value;
+  final ValueChanged<bool> onChanged;
+  final double width;
+  
+  const ToggleButton({
+    super.key,
+    required this.text,
+    required this.value,
+    required this.onChanged,
+    required this.width,
+  });
+
+  @override
+  State<ToggleButton> createState() => _ToggleButtonState();
+}
+
+class _ToggleButtonState extends State<ToggleButton> {
+  @override
+  Widget build(BuildContext context) {
+    return ElevatedButton(
+      onPressed: () => widget.onChanged(!widget.value), // Toggle the value
+      style: ElevatedButton.styleFrom(
+        minimumSize: Size(widget.width, 50),
+        backgroundColor: widget.value ? Colors.blueGrey: Colors.white10,
+        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(90),
+        ),
+      ),
+      child: Text(
+        widget.text,
+        textAlign: TextAlign.left,
+        style: TextStyle(
+          fontWeight: FontWeight.bold,
+          fontSize: 15,
+          color: widget.value ? Color(0xFFC6C0C0): Colors.white30,
         ),
       ),
     );
