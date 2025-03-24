@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "811016690663",
+    "project_id": "night-owl-f4cce",
+    "storage_bucket": "night-owl-f4cce.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:811016690663:android:59fa6437167042f71f7b42",
+        "android_client_info": {
+          "package_name": "com.example.night_owl"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyAGLdpDzt0uU-2KhZWOIkuQT2e-jiZ9C_4"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
