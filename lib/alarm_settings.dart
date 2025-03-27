@@ -1,14 +1,64 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+
+import 'package:night_owl/home_screen.dart';
 
 class AlarmSettings extends StatefulWidget {
-  const AlarmSettings({super.key});
+  final String alarmId;
+  final int order;
+  final bool isEnabled;
+  final int hour;
+  final int minute;
+  final bool mon;
+  final bool tue;
+  final bool wed;
+  final bool thu;
+  final bool fri;
+  final bool sat;
+  final bool sun;
+  final bool useAge;
+  final int sleepCycle;
+  final int targetSleepHours;
+  final int targetSleepMinutes;
+  final bool isReminderEnabled;
+  final int minutesToSleep;
+  final bool isSnoozeEnabled;
+  final int snoozeInterval;
+
+  final bool is24Hour;
+
+  const AlarmSettings({
+    super.key,
+    required this.alarmId,
+    required this.order,
+    required this.isEnabled,
+    required this.hour,
+    required this.minute,
+    required this.mon,
+    required this.tue,
+    required this.wed,
+    required this.thu,
+    required this.fri,
+    required this.sat,
+    required this.sun,
+    required this.useAge,
+    required this.sleepCycle,
+    required this.targetSleepHours,
+    required this.targetSleepMinutes,
+    required this.isReminderEnabled,
+    required this.minutesToSleep,
+    required this.isSnoozeEnabled,
+    required this.snoozeInterval,
+    required this.is24Hour,
+  });
 
   @override
   State<AlarmSettings> createState() => _AlarmSettingsState();
 }
 
 class _AlarmSettingsState extends State<AlarmSettings> {
+
   // TIME PICKER STUFF
   TimeOfDay? selectedTime = TimeOfDay.now();
   TimePickerEntryMode entryMode = TimePickerEntryMode.dial;
@@ -28,24 +78,43 @@ class _AlarmSettingsState extends State<AlarmSettings> {
 
   // SLEEP CYCLE STUFF
   bool useAge = false;
-  int sleepCycle = 0;
   final TextEditingController sleepCycleDurationController = TextEditingController(text: "");
 
   // TARGET SLEEP STUFF
-  int hours = 0;
-  int minutes = 0;
   final TextEditingController targetSleepHoursController = TextEditingController(text: "");
   final TextEditingController targetSleepMinutesController = TextEditingController(text: "");
 
   // GO-TO SLEEP STUFF
   bool isReminderEnabled = true;
-  int minutesToSleep = 0;
   final TextEditingController minutesToSleepController = TextEditingController(text: "");
 
   // Snooze STUFF
   bool isSnoozeEnabled = true;
-  int snoozeDuration = 0;
   final TextEditingController snoozeTimeController = TextEditingController(text: "");
+
+  @override
+  void initState() {
+    super.initState();
+    if(widget.hour != -1) selectedTime = TimeOfDay(hour: widget.hour, minute: widget.minute);
+    mon = widget.mon;
+    tue = widget.tue;
+    wed = widget.wed;
+    thu = widget.thu;
+    fri = widget.fri;
+    sat = widget.sat;
+    sun = widget.sun;
+    useAge = widget.useAge;
+
+    isReminderEnabled = widget.isReminderEnabled;
+    isSnoozeEnabled = widget.isSnoozeEnabled;
+    use24HourTime = widget.is24Hour;
+
+    if(widget.sleepCycle != -1) sleepCycleDurationController.text = widget.sleepCycle.toString();
+    if(widget.targetSleepHours != -1) targetSleepHoursController.text = widget.targetSleepHours.toString();
+    if(widget.targetSleepMinutes != -1) targetSleepMinutesController.text = widget.targetSleepMinutes.toString();
+    if(widget.minutesToSleep != -1) minutesToSleepController.text = widget.minutesToSleep.toString();
+    if(widget.snoozeInterval != -1) snoozeTimeController.text = widget.snoozeInterval.toString();
+  }
 
   void updateMon(bool newValue) {
     setState(() {
@@ -94,7 +163,63 @@ class _AlarmSettingsState extends State<AlarmSettings> {
     });
   }
   void submitSettings() {
+    final alarm = <String, dynamic>{
+      "order": 1,
+      "isEnabled": widget.isEnabled,
+      "hour": selectedTime!.hour,
+      "minute": selectedTime!.minute,
+      "mon": mon,
+      "tue": tue,
+      "wed": wed,
+      "thu": thu,
+      "fri": fri,
+      "sat": sat,
+      "sun": sun,
+      "useAge": useAge,
+      "sleepCycle": int.parse(sleepCycleDurationController.text),
+      "targetSleepHours": int.parse(targetSleepHoursController.text),
+      "targetSleepMinutes": int.parse(targetSleepMinutesController.text),
+      "isReminderEnabled": isReminderEnabled,
+      "minutesToSleep": int.parse(minutesToSleepController.text),
+      "isSnoozeEnabled": isSnoozeEnabled,
+      "snoozeInterval": int.parse(snoozeTimeController.text),
+    };
 
+    if(widget.alarmId == "-1"){
+      addAlarm(alarm, "test_user_id");
+    }
+    else{
+      setAlarm(alarm, "test_user_id", widget.alarmId.toString());
+    }
+
+    Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (context) => HomeScreen(),
+      )
+    );
+  }
+
+  void addAlarm(Map<String, dynamic> userInfoMap, String userId) async{
+    FirebaseFirestore.instance
+      .collection("users")
+      .doc(userId)
+      .collection("timers")
+      .add(userInfoMap).then(
+            (querySnapshot) {
+          print("Successfully completed");
+        },
+        onError: (e) => print("Error completing: $e"),
+    );
+  }
+
+  void setAlarm(Map<String, dynamic> userInfoMap, String userId, String alarmId) async{
+    FirebaseFirestore.instance
+      .collection("users")
+      .doc(userId)
+      .collection("timers")
+      .doc(alarmId)
+      .set(userInfoMap);
   }
 
   @override
@@ -226,16 +351,16 @@ class _AlarmSettingsState extends State<AlarmSettings> {
                           ToggleButton(text: "Thu", value: thu, onChanged: updateThu, width: 70, height: 50,),
                           SizedBox(width: 5,),
                           ToggleButton(text: "Fri", value: fri, onChanged: updateFri, width: 70, height: 50,),
-                        ]
+                        ],
                       ),
                       SizedBox(height: 15,),
                       Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            ToggleButton(text: "Sat", value: sat, onChanged: updateSat, width: 150, height: 50,),
-                            SizedBox(width: 40,),
-                            ToggleButton(text: "Sun", value: sun, onChanged: updateSun, width: 150, height: 50,),
-                          ]
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          ToggleButton(text: "Sat", value: sat, onChanged: updateSat, width: 150, height: 50,),
+                          SizedBox(width: 40,),
+                          ToggleButton(text: "Sun", value: sun, onChanged: updateSun, width: 150, height: 50,),
+                        ],
                       ),
                     ],
                   ),
@@ -641,7 +766,7 @@ class _AlarmSettingsState extends State<AlarmSettings> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        "Snooze Duration",
+                        "Snooze Interval",
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 25,
@@ -657,7 +782,7 @@ class _AlarmSettingsState extends State<AlarmSettings> {
                             height: 60,
                             child: TextField(
                               readOnly: !isSnoozeEnabled,
-                              controller: minutesToSleepController,
+                              controller: snoozeTimeController,
                               keyboardType: TextInputType.number, // Numeric keyboard
                               inputFormatters: [
                                 FilteringTextInputFormatter.digitsOnly,
@@ -758,7 +883,7 @@ class _AlarmSettingsState extends State<AlarmSettings> {
                 ),
                 child: Center(
                   child: ElevatedButton(
-                    onPressed: () => submitSettings,
+                    onPressed: () => submitSettings(),
                     style: ElevatedButton.styleFrom(
                       fixedSize: Size(350, 65),
                       backgroundColor: Colors.blueGrey,

@@ -2,14 +2,14 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:night_owl/home_screen.dart';
 
-class LoginScreen extends StatefulWidget {
-  const LoginScreen({Key? key}) : super(key: key);
+class RegisterScreen extends StatefulWidget {
+  const RegisterScreen({Key? key}) : super(key: key);
 
   @override
-  State<LoginScreen> createState() => _LoginScreenState();
+  State<RegisterScreen> createState() => _RegisterScreenState();
 }
 
-class _LoginScreenState extends State<LoginScreen> {
+class _RegisterScreenState extends State<RegisterScreen> {
   String email = "", password = "";
 
   final emailController = TextEditingController();
@@ -17,27 +17,61 @@ class _LoginScreenState extends State<LoginScreen> {
 
   final _formkey = GlobalKey<FormState>();
 
-  userLogin() async {
+  registration() async {
     if (emailController.text != "") {
       try {
-        await FirebaseAuth.instance.signInWithEmailAndPassword(email: email, password: password);
-        Navigator.push(context, MaterialPageRoute(builder: (context) => HomeScreen()));
+        UserCredential userCredential = await FirebaseAuth.instance
+            .createUserWithEmailAndPassword(email: email, password: password);
+        ScaffoldMessenger.of(context)
+            .showSnackBar(
+            SnackBar(
+              backgroundColor: Color(0xFF123456),
+              content: Text(
+                "Registered Successfully",
+                style: TextStyle(
+                  fontSize: 20.0,
+                  fontWeight: FontWeight.bold,
+                ),
+              )
+            )
+        );
+        Navigator.push(context,
+          MaterialPageRoute(
+            builder: (context) => HomeScreen(),
+          ),
+        );
       }
       on FirebaseAuthException catch (e) {
-        if (e.code == 'invalid-email' || e.code == 'invalid-credential') {
+        if (e.code == 'weak-password') {
           ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                backgroundColor: Color(0xFF123456),
-                content: Center(
-                  child: Text(
-                    "Email or Password is Incorrect",
-                    style: TextStyle(
-                        fontSize: 20.0,
-                        fontWeight: FontWeight.bold,
-                    ),
+            SnackBar(
+              backgroundColor: Color(0xFF123456),
+              content: Center(
+                child: Text(
+                  "Password Provided is too Weak",
+                  style: TextStyle(
+                    fontSize: 20.0,
+                    fontWeight: FontWeight.bold,
                   ),
-                )
+                ),
               )
+            )
+          );
+        }
+        else if (e.code == "email-already-in-use") {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              backgroundColor: Color(0xFF123456),
+              content: Center(
+                child: Text(
+                  "Email is already in use",
+                  style: TextStyle(
+                    fontSize: 20.0,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+              )
+            )
           );
         }
       }
@@ -148,7 +182,7 @@ class _LoginScreenState extends State<LoginScreen> {
                       password = passwordController.text;
                     });
                   }
-                  userLogin();
+                  registration();
                 },
                 child: Text(
                   "Submit".toUpperCase(),

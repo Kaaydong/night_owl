@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:night_owl/alarm_settings.dart';
 import 'package:night_owl/user_settings.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -10,6 +12,42 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  var alarmList = [];
+  int count = 0;
+  late User user;
+  late String uid;
+
+  Future getUserAlarms(String id) async {
+    return await FirebaseFirestore.instance
+        .collection("users")
+        .doc(id)
+        .collection("timers")
+        .get().then(
+          (querySnapshot) {
+        print("Successfully completed");
+
+        for (var docSnapshot in querySnapshot.docs) {
+          setState(() {
+            alarmList.add(docSnapshot);
+            count++;
+          });
+          //print('${docSnapshot.id} => ${docSnapshot.data()}');
+        }
+      },
+      onError: (e) => print("Error completing: $e"),
+    );
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    final FirebaseAuth auth = FirebaseAuth.instance;
+    user = auth.currentUser!;
+    uid = user.uid;
+    getUserAlarms("test_user_id");
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -60,36 +98,63 @@ class _HomeScreenState extends State<HomeScreen> {
                       icon: const Icon(Icons.add),
                       color: Color(0xFFC6C0C0),
                       onPressed: () {
-                        // do something
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => AlarmSettings(
+                              alarmId: "-1",
+                              order: count+1,
+                              isEnabled: true,
+                              hour: -1,
+                              minute: -1,
+                              mon: true,
+                              tue: true,
+                              wed: true,
+                              thu: true,
+                              fri: true,
+                              sat: false,
+                              sun: false,
+                              useAge: false,
+                              sleepCycle: -1,
+                              targetSleepHours: -1,
+                              targetSleepMinutes: -1,
+                              isReminderEnabled: true,
+                              minutesToSleep: -1,
+                              isSnoozeEnabled: true,
+                              snoozeInterval: -1,
+                              is24Hour: false,
+                            ),
+                          )
+                        );
                       },
                     ),
                   ],
                 ),
               ),
-              TimerItem(
-                timeValue: 800,
-                is24Hour: false,
-                mon: true,
-                tue: true,
-                wed: true,
-                thu: true,
-                fri: true,
-                sat: false,
-                sun: false,
-                active: true,
-              ),
-              TimerItem(
-                timeValue: 1045,
-                is24Hour: false,
-                mon: true,
-                tue: true,
-                wed: true,
-                thu: true,
-                fri: true,
-                sat: true,
-                sun: true,
-                active: false,
-              ),
+              for (var alarm in alarmList)
+                TimerItem(
+                  alarmId: '${alarm.id}',
+                  order: alarm.data()["order"],
+                  isEnabled: alarm.data()['isEnabled'],
+                  hour: alarm.data()["hour"],
+                  minute: alarm.data()["minute"],
+                  mon: alarm.data()["mon"],
+                  tue: alarm.data()["tue"],
+                  wed: alarm.data()["wed"],
+                  thu: alarm.data()["thu"],
+                  fri: alarm.data()["fri"],
+                  sat: alarm.data()["sat"],
+                  sun: alarm.data()["sun"],
+                  useAge: alarm.data()["useAge"],
+                  sleepCycle: alarm.data()["sleepCycle"],
+                  targetSleepHours: alarm.data()["targetSleepHours"],
+                  targetSleepMinutes: alarm.data()["targetSleepMinutes"],
+                  isReminderEnabled: alarm.data()["isReminderEnabled"],
+                  minutesToSleep: alarm.data()["minutesToSleep"],
+                  isSnoozeEnabled: alarm.data()["isSnoozeEnabled"],
+                  snoozeInterval: alarm.data()["snoozeInterval"],
+                  is24Hour: false,
+                ),
             ],
           ),
         )
@@ -101,8 +166,11 @@ class _HomeScreenState extends State<HomeScreen> {
 
 // Child Stateful Widget
 class TimerItem extends StatefulWidget {
-  final int timeValue;
-  final bool is24Hour;
+  final String alarmId;
+  final int order;
+  final bool isEnabled;
+  final int hour;
+  final int minute;
   final bool mon;
   final bool tue;
   final bool wed;
@@ -110,12 +178,24 @@ class TimerItem extends StatefulWidget {
   final bool fri;
   final bool sat;
   final bool sun;
-  final bool active;
+  final bool useAge;
+  final int sleepCycle;
+  final int targetSleepHours;
+  final int targetSleepMinutes;
+  final bool isReminderEnabled;
+  final int minutesToSleep;
+  final bool isSnoozeEnabled;
+  final int snoozeInterval;
+
+  final bool is24Hour;
 
   const TimerItem({
     super.key,
-    required this.timeValue,
-    required this.is24Hour,
+    required this.alarmId,
+    required this.order,
+    required this.isEnabled,
+    required this.hour,
+    required this.minute,
     required this.mon,
     required this.tue,
     required this.wed,
@@ -123,8 +203,17 @@ class TimerItem extends StatefulWidget {
     required this.fri,
     required this.sat,
     required this.sun,
-    required this.active,
+    required this.useAge,
+    required this.sleepCycle,
+    required this.targetSleepHours,
+    required this.targetSleepMinutes,
+    required this.isReminderEnabled,
+    required this.minutesToSleep,
+    required this.isSnoozeEnabled,
+    required this.snoozeInterval,
+    required this.is24Hour,
   });
+
 
   @override
   State<TimerItem> createState() => _TimerItemState();
@@ -136,11 +225,11 @@ class _TimerItemState extends State<TimerItem> {
   @override
   void initState() {
     super.initState();
-    isSwitched = widget.active; // Set the initial switch state
+    isSwitched = widget.isEnabled; // Set the initial switch state
   }
 
   String getFormattedTime() {
-    int time = widget.timeValue;
+    int time = widget.hour * 100 + widget.minute;
     int hourTime;
     int minuteTime;
     if(widget.is24Hour){
@@ -195,11 +284,32 @@ class _TimerItemState extends State<TimerItem> {
     return GestureDetector(
       onTap: (){
         Navigator.push(
-            context,
-            MaterialPageRoute(
-                builder: (context){
-                  return AlarmSettings();
-                })
+          context,
+          MaterialPageRoute(
+            builder: (context) => AlarmSettings(
+              alarmId: widget.alarmId,
+              order: widget.order,
+              isEnabled: widget.isEnabled,
+              hour: widget.hour,
+              minute: widget.minute,
+              mon: widget.mon,
+              tue: widget.tue,
+              wed: widget.wed,
+              thu: widget.thu,
+              fri: widget.fri,
+              sat: widget.sat,
+              sun: widget.sun,
+              useAge: widget.useAge,
+              sleepCycle: widget.sleepCycle,
+              targetSleepHours: widget.targetSleepHours,
+              targetSleepMinutes: widget.targetSleepMinutes,
+              isReminderEnabled: widget.isReminderEnabled,
+              minutesToSleep: widget.minutesToSleep,
+              isSnoozeEnabled: widget.isSnoozeEnabled,
+              snoozeInterval: widget.snoozeInterval,
+              is24Hour: widget.is24Hour,
+            ),
+          ),
         );
       },
       child: Padding(

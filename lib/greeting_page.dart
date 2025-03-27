@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:night_owl/home_screen.dart';
 import 'package:night_owl/login.dart';
+import 'package:night_owl/register.dart';
 
 class GreetingPage extends StatefulWidget {
   const GreetingPage({super.key});
@@ -50,12 +51,12 @@ class _State extends State<GreetingPage> {
                       context,
                       MaterialPageRoute(
                           builder: (context){
-                            return HomeScreen();
+                            return LoginScreen();
                           })
                   );
                 },
                 child: Text(
-                  "Guest".toUpperCase(),
+                  "Login".toUpperCase(),
                   style: const TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 30,
@@ -75,12 +76,12 @@ class _State extends State<GreetingPage> {
                       context,
                       MaterialPageRoute(
                           builder: (context){
-                            return LoginScreen();
+                            return RegisterScreen();
                           })
                   );
                 },
                 child: Text(
-                  "Login".toUpperCase(),
+                  "Register".toUpperCase(),
                   style: const TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 30,
