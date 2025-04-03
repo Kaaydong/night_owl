@@ -5,7 +5,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({super.key});
+  final bool isFirstLogin;
+
+  const HomeScreen({
+    super.key,
+    required this.isFirstLogin,
+  });
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -16,6 +21,49 @@ class _HomeScreenState extends State<HomeScreen> {
   int count = 0;
   late User user;
   late String uid;
+  late String email;
+  late int birthdayDay;
+  late int birthdayMonth;
+  late int birthdayYear;
+  late bool twentyFourHourEnabled;
+
+  void createUserSettings(String userId) async{
+    setState(() {
+      birthdayDay = 1;
+      birthdayMonth = 1;
+      birthdayYear = 2000;
+      twentyFourHourEnabled = false;
+    });
+
+    FirebaseFirestore.instance
+        .collection("users")
+        .doc(userId)
+        .set({
+          "birthdayDay": birthdayDay,
+          "birthdayMonth": birthdayMonth,
+          "birthdayYear": birthdayYear,
+          "twentyFourHourEnabled": twentyFourHourEnabled,
+    });
+  }
+
+  Future getUserSettings(String id) async {
+    return await FirebaseFirestore.instance
+        .collection("users")
+        .doc(id)
+        .get().then(
+          (querySnapshot) {
+        print("Successfully completed");
+
+        setState(() {
+          birthdayDay = querySnapshot.data()!["birthdayDay"];
+          birthdayMonth = querySnapshot.data()!["birthdayMonth"];
+          birthdayYear = querySnapshot.data()!["birthdayYear"];
+          twentyFourHourEnabled = querySnapshot.data()!["twentyFourHourEnabled"];
+        });
+      },
+      onError: (e) => print("Error completing: $e"),
+    );
+  }
 
   Future getUserAlarms(String id) async {
     return await FirebaseFirestore.instance
@@ -45,7 +93,16 @@ class _HomeScreenState extends State<HomeScreen> {
     final FirebaseAuth auth = FirebaseAuth.instance;
     user = auth.currentUser!;
     uid = user.uid;
-    getUserAlarms("test_user_id");
+    email = user.email!;
+
+    if (widget.isFirstLogin){
+      createUserSettings(uid);
+    }
+    else {
+      getUserSettings(uid);
+    }
+
+    getUserAlarms(uid);
   }
 
   @override
@@ -89,7 +146,13 @@ class _HomeScreenState extends State<HomeScreen> {
                             context,
                             MaterialPageRoute(
                                 builder: (context){
-                                  return UserSettings();
+                                  return UserSettings(
+                                    email: email,
+                                    birthdayDay: birthdayDay,
+                                    birthdayMonth: birthdayMonth,
+                                    birthdayYear: birthdayYear,
+                                    twentyFourHourEnabled: twentyFourHourEnabled,
+                                  );
                                 })
                         );
                       },
@@ -102,6 +165,7 @@ class _HomeScreenState extends State<HomeScreen> {
                           context,
                           MaterialPageRoute(
                             builder: (context) => AlarmSettings(
+                              userId: uid,
                               alarmId: "-1",
                               order: count+1,
                               isEnabled: true,
@@ -133,6 +197,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               for (var alarm in alarmList)
                 TimerItem(
+                  userId: uid,
                   alarmId: '${alarm.id}',
                   order: alarm.data()["order"],
                   isEnabled: alarm.data()['isEnabled'],
@@ -153,7 +218,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   minutesToSleep: alarm.data()["minutesToSleep"],
                   isSnoozeEnabled: alarm.data()["isSnoozeEnabled"],
                   snoozeInterval: alarm.data()["snoozeInterval"],
-                  is24Hour: false,
+                  is24Hour: twentyFourHourEnabled,
                 ),
             ],
           ),
@@ -166,6 +231,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
 // Child Stateful Widget
 class TimerItem extends StatefulWidget {
+  final String userId;
   final String alarmId;
   final int order;
   final bool isEnabled;
@@ -191,6 +257,7 @@ class TimerItem extends StatefulWidget {
 
   const TimerItem({
     super.key,
+    required this.userId,
     required this.alarmId,
     required this.order,
     required this.isEnabled,
@@ -287,6 +354,7 @@ class _TimerItemState extends State<TimerItem> {
           context,
           MaterialPageRoute(
             builder: (context) => AlarmSettings(
+              userId: widget.userId,
               alarmId: widget.alarmId,
               order: widget.order,
               isEnabled: widget.isEnabled,
@@ -367,6 +435,12 @@ class _TimerItemState extends State<TimerItem> {
                     setState(() {
                       isSwitched = value;
                     });
+                    FirebaseFirestore.instance
+                        .collection("users")
+                        .doc(widget.userId)
+                        .collection("timers")
+                        .doc(widget.alarmId.toString())
+                        .update({"isEnabled": value});
                   },
                   activeColor: Colors.white, // Color of the switch handle when on
                   activeTrackColor: Colors.blueGrey, // Background color when switch is on

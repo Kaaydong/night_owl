@@ -21,7 +21,7 @@ class _LoginScreenState extends State<LoginScreen> {
     if (emailController.text != "") {
       try {
         await FirebaseAuth.instance.signInWithEmailAndPassword(email: email, password: password);
-        Navigator.push(context, MaterialPageRoute(builder: (context) => HomeScreen()));
+        Navigator.push(context, MaterialPageRoute(builder: (context) => HomeScreen(isFirstLogin: false,)));
       }
       on FirebaseAuthException catch (e) {
         if (e.code == 'invalid-email' || e.code == 'invalid-credential') {

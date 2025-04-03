@@ -2,7 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class UserSettings extends StatefulWidget {
-  const UserSettings({super.key});
+  final String email;
+  final int birthdayDay;
+  final int birthdayMonth;
+  final int birthdayYear;
+  final bool twentyFourHourEnabled;
+
+  const UserSettings({
+    super.key,
+    required this.email,
+    required this.birthdayDay,
+    required this.birthdayMonth,
+    required this.birthdayYear,
+    required this.twentyFourHourEnabled,
+  });
 
   @override
   State<UserSettings> createState() => _UserSettingsState();
@@ -35,8 +48,13 @@ class _UserSettingsState extends State<UserSettings> {
           child: ListView(
             scrollDirection: Axis.vertical,
             children: [
-              UserProfile(username: "Kayden"),
-              TwentyFourHourSelector(is_24_hours_enabled: true),
+              UserProfile(
+                  username: widget.email,
+                  birthdayDay: widget.birthdayDay,
+                  birthdayMonth: widget.birthdayMonth,
+                  birthdayYear: widget.birthdayYear,
+              ),
+              TwentyFourHourSelector(twentyFourHoursEnabled: widget.twentyFourHourEnabled),
             ],
           ),
         )
@@ -45,12 +63,30 @@ class _UserSettingsState extends State<UserSettings> {
 }
 
 class DatePickerButton extends StatefulWidget {
+  final int birthdayDay;
+  final int birthdayMonth;
+  final int birthdayYear;
+
+  const DatePickerButton({
+    super.key,
+    required this.birthdayDay,
+    required this.birthdayMonth,
+    required this.birthdayYear,
+  });
+
   @override
   _DatePickerButtonState createState() => _DatePickerButtonState();
 }
 
 class _DatePickerButtonState extends State<DatePickerButton> {
   DateTime selectedDate = DateTime.now();
+
+  @override
+  void initState() {
+    super.initState();
+
+    selectedDate = DateTime(widget.birthdayYear, widget.birthdayMonth, widget.birthdayDay);
+  }
 
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
@@ -110,10 +146,16 @@ class _DatePickerButtonState extends State<DatePickerButton> {
 
 class UserProfile extends StatefulWidget {
   final String username;
+  final int birthdayDay;
+  final int birthdayMonth;
+  final int birthdayYear;
 
   const UserProfile({
     super.key,
     required this.username,
+    required this.birthdayDay,
+    required this.birthdayMonth,
+    required this.birthdayYear,
   });
 
   @override
@@ -152,7 +194,7 @@ class _UserProfileState extends State<UserProfile> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      "Username",
+                      "Email",
                       textAlign: TextAlign.left,
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
@@ -198,7 +240,11 @@ class _UserProfileState extends State<UserProfile> {
                         color: Colors.white30,
                       ),
                     ),
-                    DatePickerButton(),
+                    DatePickerButton(
+                      birthdayDay: widget.birthdayDay,
+                      birthdayMonth: widget.birthdayMonth,
+                      birthdayYear: widget.birthdayYear,
+                    ),
                   ],
                 ),
               )
@@ -211,10 +257,10 @@ class _UserProfileState extends State<UserProfile> {
 }
 
 class TwentyFourHourSelector extends StatefulWidget {
-  final bool is_24_hours_enabled;
+  final bool twentyFourHoursEnabled;
   const TwentyFourHourSelector({
     super.key,
-    required this.is_24_hours_enabled,
+    required this.twentyFourHoursEnabled,
   });
 
   @override
@@ -227,7 +273,7 @@ class _TwentyFourHourSelectorState extends State<TwentyFourHourSelector> {
   @override
   void initState() {
     super.initState();
-    isSwitched = widget.is_24_hours_enabled; // Set the initial switch state
+    isSwitched = widget.twentyFourHoursEnabled; // Set the initial switch state
   }
 
   @override

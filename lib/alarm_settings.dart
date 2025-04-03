@@ -5,6 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:night_owl/home_screen.dart';
 
 class AlarmSettings extends StatefulWidget {
+  final String userId;
   final String alarmId;
   final int order;
   final bool isEnabled;
@@ -30,6 +31,7 @@ class AlarmSettings extends StatefulWidget {
 
   const AlarmSettings({
     super.key,
+    required this.userId,
     required this.alarmId,
     required this.order,
     required this.isEnabled,
@@ -186,16 +188,16 @@ class _AlarmSettingsState extends State<AlarmSettings> {
     };
 
     if(widget.alarmId == "-1"){
-      addAlarm(alarm, "test_user_id");
+      addAlarm(alarm, widget.userId);
     }
     else{
-      setAlarm(alarm, "test_user_id", widget.alarmId.toString());
+      setAlarm(alarm, widget.userId, widget.alarmId.toString());
     }
 
     Navigator.push(
       context,
       MaterialPageRoute(
-        builder: (context) => HomeScreen(),
+        builder: (context) => HomeScreen(isFirstLogin: false,),
       )
     );
   }

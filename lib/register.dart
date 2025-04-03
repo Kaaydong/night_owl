@@ -37,7 +37,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         );
         Navigator.push(context,
           MaterialPageRoute(
-            builder: (context) => HomeScreen(),
+            builder: (context) => HomeScreen(isFirstLogin: true,),
           ),
         );
       }
