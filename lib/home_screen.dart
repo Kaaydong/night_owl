@@ -119,6 +119,7 @@ class _HomeScreenState extends State<HomeScreen> {
               color: Colors.black,
             ),
           ),
+          automaticallyImplyLeading: false,
           centerTitle: true,
           backgroundColor: Color(0xFF123456),
         ),
@@ -147,6 +148,7 @@ class _HomeScreenState extends State<HomeScreen> {
                             MaterialPageRoute(
                                 builder: (context){
                                   return UserSettings(
+                                    uid: uid,
                                     email: email,
                                     birthdayDay: birthdayDay,
                                     birthdayMonth: birthdayMonth,
@@ -187,6 +189,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               isSnoozeEnabled: true,
                               snoozeInterval: -1,
                               is24Hour: false,
+                              birthday: DateTime(birthdayYear, birthdayMonth, birthdayDay),
                             ),
                           )
                         );
@@ -219,6 +222,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   isSnoozeEnabled: alarm.data()["isSnoozeEnabled"],
                   snoozeInterval: alarm.data()["snoozeInterval"],
                   is24Hour: twentyFourHourEnabled,
+                  birthday: DateTime(birthdayYear, birthdayMonth, birthdayDay),
                 ),
             ],
           ),
@@ -254,6 +258,7 @@ class TimerItem extends StatefulWidget {
   final int snoozeInterval;
 
   final bool is24Hour;
+  final DateTime birthday;
 
   const TimerItem({
     super.key,
@@ -279,6 +284,7 @@ class TimerItem extends StatefulWidget {
     required this.isSnoozeEnabled,
     required this.snoozeInterval,
     required this.is24Hour,
+    required this.birthday,
   });
 
 
@@ -376,6 +382,7 @@ class _TimerItemState extends State<TimerItem> {
               isSnoozeEnabled: widget.isSnoozeEnabled,
               snoozeInterval: widget.snoozeInterval,
               is24Hour: widget.is24Hour,
+              birthday: widget.birthday,
             ),
           ),
         );

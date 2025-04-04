@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+
 import 'package:night_owl/home_screen.dart';
 import 'package:night_owl/login.dart';
 import 'package:night_owl/register.dart';
@@ -11,6 +13,7 @@ class GreetingPage extends StatefulWidget {
 }
 
 class _State extends State<GreetingPage> {
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

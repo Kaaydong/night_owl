@@ -28,6 +28,7 @@ class AlarmSettings extends StatefulWidget {
   final int snoozeInterval;
 
   final bool is24Hour;
+  final DateTime birthday;
 
   const AlarmSettings({
     super.key,
@@ -53,6 +54,7 @@ class AlarmSettings extends StatefulWidget {
     required this.isSnoozeEnabled,
     required this.snoozeInterval,
     required this.is24Hour,
+    required this.birthday,
   });
 
   @override
@@ -157,7 +159,20 @@ class _AlarmSettingsState extends State<AlarmSettings> {
     setState(() {
       useAge = newValue; // Update the boolean value
       if (newValue) {
-        sleepCycleDurationController.text = "70";
+        int age = DateTime.now().difference(widget.birthday).inDays ~/ 365;
+
+        if (age < 5) {
+          sleepCycleDurationController.text = "70";
+        }
+        else if (age < 20) {
+          sleepCycleDurationController.text = "110";
+        }
+        else if (age < 65) {
+          sleepCycleDurationController.text = "90";
+        }
+        else {
+          sleepCycleDurationController.text = "70";
+        }
       }
       else {
         sleepCycleDurationController.text = "";

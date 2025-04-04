@@ -1,7 +1,11 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:intl/intl.dart';
+import 'package:night_owl/greeting_page.dart';
+import 'package:night_owl/home_screen.dart';
 
 class UserSettings extends StatefulWidget {
+  final String uid;
   final String email;
   final int birthdayDay;
   final int birthdayMonth;
@@ -10,6 +14,7 @@ class UserSettings extends StatefulWidget {
 
   const UserSettings({
     super.key,
+    required this.uid,
     required this.email,
     required this.birthdayDay,
     required this.birthdayMonth,
@@ -36,6 +41,14 @@ class _UserSettingsState extends State<UserSettings> {
               color: Colors.black,
             ),
           ),
+          leading: IconButton(
+            icon: Icon(Icons.arrow_back), // Custom back button icon
+            onPressed: () {
+              Navigator.push(context, MaterialPageRoute(
+                  builder: (context) => HomeScreen(isFirstLogin: false,)
+              ));
+            },
+          ),
           centerTitle: true,
           backgroundColor: Color(0xFF123456),
         ),
@@ -49,12 +62,65 @@ class _UserSettingsState extends State<UserSettings> {
             scrollDirection: Axis.vertical,
             children: [
               UserProfile(
+                  uid: widget.uid,
                   username: widget.email,
                   birthdayDay: widget.birthdayDay,
                   birthdayMonth: widget.birthdayMonth,
                   birthdayYear: widget.birthdayYear,
               ),
-              TwentyFourHourSelector(twentyFourHoursEnabled: widget.twentyFourHourEnabled),
+              TwentyFourHourSelector(
+                  uid: widget.uid,
+                  twentyFourHoursEnabled: widget.twentyFourHourEnabled
+              ),
+              Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: Container(
+                  height: 100,
+                  padding: const EdgeInsets.all(4.0),
+                  decoration: BoxDecoration(
+                    border: Border.all(color: Colors.black38, width: 2.0),
+                    borderRadius: BorderRadius.circular(14.0),
+                    color: Color(0xFF123456),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withValues(alpha: 0.4),
+                        spreadRadius: 5,
+                        blurRadius: 7,
+                        offset: Offset(0, 3),
+                      ),
+                    ],
+                  ),
+                  child: Center(
+                    child: ElevatedButton(
+                      onPressed: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => GreetingPage(),
+                          )
+                        );
+                      },
+                      style: ElevatedButton.styleFrom(
+                        fixedSize: Size(350, 65),
+                        backgroundColor: Colors.blueGrey,
+                        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(90),
+                        ),
+                      ),
+                      child: Text(
+                        "Logout",
+                        textAlign: TextAlign.left,
+                        style: TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 24,
+                          color: Color(0xFFC6C0C0),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              )
             ],
           ),
         )
@@ -63,12 +129,14 @@ class _UserSettingsState extends State<UserSettings> {
 }
 
 class DatePickerButton extends StatefulWidget {
+  final String uid;
   final int birthdayDay;
   final int birthdayMonth;
   final int birthdayYear;
 
   const DatePickerButton({
     super.key,
+    required this.uid,
     required this.birthdayDay,
     required this.birthdayMonth,
     required this.birthdayYear,
@@ -92,8 +160,8 @@ class _DatePickerButtonState extends State<DatePickerButton> {
     final DateTime? picked = await showDatePicker(
       context: context,
       initialDate: selectedDate,
-      firstDate: DateTime(2000),
-      lastDate: DateTime(2101),
+      firstDate: DateTime(1900),
+      lastDate: DateTime.now(),
       builder: (context, child) {
         return Theme(
           data: ThemeData.light().copyWith(
@@ -116,6 +184,14 @@ class _DatePickerButtonState extends State<DatePickerButton> {
       setState(() {
         selectedDate = picked;
       });
+      FirebaseFirestore.instance
+          .collection("users")
+          .doc(widget.uid)
+          .update({
+              "birthdayDay": selectedDate.day,
+              "birthdayMonth": selectedDate.month,
+              "birthdayYear": selectedDate.year,
+          });
     }
   }
 
@@ -145,6 +221,7 @@ class _DatePickerButtonState extends State<DatePickerButton> {
 }
 
 class UserProfile extends StatefulWidget {
+  final String uid;
   final String username;
   final int birthdayDay;
   final int birthdayMonth;
@@ -152,6 +229,7 @@ class UserProfile extends StatefulWidget {
 
   const UserProfile({
     super.key,
+    required this.uid,
     required this.username,
     required this.birthdayDay,
     required this.birthdayMonth,
@@ -241,6 +319,7 @@ class _UserProfileState extends State<UserProfile> {
                       ),
                     ),
                     DatePickerButton(
+                      uid: widget.uid,
                       birthdayDay: widget.birthdayDay,
                       birthdayMonth: widget.birthdayMonth,
                       birthdayYear: widget.birthdayYear,
@@ -257,9 +336,12 @@ class _UserProfileState extends State<UserProfile> {
 }
 
 class TwentyFourHourSelector extends StatefulWidget {
+  final String uid;
   final bool twentyFourHoursEnabled;
+
   const TwentyFourHourSelector({
     super.key,
+    required this.uid,
     required this.twentyFourHoursEnabled,
   });
 
@@ -321,6 +403,10 @@ class _TwentyFourHourSelectorState extends State<TwentyFourHourSelector> {
                         setState(() {
                           isSwitched = value;
                         });
+                        FirebaseFirestore.instance
+                            .collection("users")
+                            .doc(widget.uid)
+                            .update({"twentyFourHourEnabled": isSwitched});
                       },
                       activeColor: Colors.white, // Color of the switch handle when on
                       activeTrackColor: Colors.blueGrey, // Background color when switch is on
