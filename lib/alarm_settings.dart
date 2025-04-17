@@ -4,7 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'package:night_owl/home_screen.dart';
 
-class AlarmSettings extends StatefulWidget {
+class AlarmOptions extends StatefulWidget {
   final String userId;
   final String alarmId;
   final int order;
@@ -30,7 +30,7 @@ class AlarmSettings extends StatefulWidget {
   final bool is24Hour;
   final DateTime birthday;
 
-  const AlarmSettings({
+  const AlarmOptions({
     super.key,
     required this.userId,
     required this.alarmId,
@@ -58,10 +58,10 @@ class AlarmSettings extends StatefulWidget {
   });
 
   @override
-  State<AlarmSettings> createState() => _AlarmSettingsState();
+  State<AlarmOptions> createState() => _AlarmOptionsState();
 }
 
-class _AlarmSettingsState extends State<AlarmSettings> {
+class _AlarmOptionsState extends State<AlarmOptions> {
 
   // TIME PICKER STUFF
   TimeOfDay? selectedTime = TimeOfDay.now();
@@ -298,7 +298,7 @@ class _AlarmSettingsState extends State<AlarmSettings> {
                       ),
                       ElevatedButton(
                         style: ElevatedButton.styleFrom(
-                          minimumSize: const Size(350,100),
+                          minimumSize: const Size(330,100),
                           backgroundColor: Colors.blueGrey,
                           padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
                           shape: RoundedRectangleBorder(
@@ -359,133 +359,29 @@ class _AlarmSettingsState extends State<AlarmSettings> {
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          ToggleButton(text: "Mon", value: mon, onChanged: updateMon, width: 70, height: 50,),
-                          SizedBox(width: 5,),
-                          ToggleButton(text: "Tue", value: tue, onChanged: updateTue, width: 70, height: 50,),
-                          SizedBox(width: 5,),
-                          ToggleButton(text: "Wed", value: wed, onChanged: updateWed, width: 70, height: 50,),
-                          SizedBox(width: 5,),
-                          ToggleButton(text: "Thu", value: thu, onChanged: updateThu, width: 70, height: 50,),
-                          SizedBox(width: 5,),
-                          ToggleButton(text: "Fri", value: fri, onChanged: updateFri, width: 70, height: 50,),
+                          ToggleButton(text: "Mon", value: mon, onChanged: updateMon, width: 55, height: 50,),
+                          SizedBox(width: 4,),
+                          ToggleButton(text: "Tue", value: tue, onChanged: updateTue, width: 55, height: 50,),
+                          SizedBox(width: 4,),
+                          ToggleButton(text: "Wed", value: wed, onChanged: updateWed, width: 55, height: 50,),
+                          SizedBox(width: 4,),
+                          ToggleButton(text: "Thu", value: thu, onChanged: updateThu, width: 55, height: 50,),
+                          SizedBox(width: 4,),
+                          ToggleButton(text: "Fri", value: fri, onChanged: updateFri, width: 55, height: 50,),
                         ],
                       ),
                       SizedBox(height: 15,),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          ToggleButton(text: "Sat", value: sat, onChanged: updateSat, width: 150, height: 50,),
+                          ToggleButton(text: "Sat", value: sat, onChanged: updateSat, width: 130, height: 50,),
                           SizedBox(width: 40,),
-                          ToggleButton(text: "Sun", value: sun, onChanged: updateSun, width: 150, height: 50,),
+                          ToggleButton(text: "Sun", value: sun, onChanged: updateSun, width: 130, height: 50,),
                         ],
                       ),
                     ],
                   ),
                 ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: Container(
-                height: 200,
-                padding: const EdgeInsets.all(4.0),
-                decoration: BoxDecoration(
-                  border: Border.all(color: Colors.black38, width: 2.0),
-                  borderRadius: BorderRadius.circular(14.0),
-                  color: Color(0xFF123456),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withValues(alpha: 0.4),
-                      spreadRadius: 5,
-                      blurRadius: 7,
-                      offset: Offset(0, 3),
-                    ),
-                  ],
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.only(top: 10, left: 15, right: 15),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        "Sleep Cycle Duration",
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 25,
-                          color: Colors.white54,
-                        ),
-                      ),
-                      SizedBox(height: 7,),
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Container(
-                            width: 220,
-                            height: 60,
-                            child: TextField(
-                              readOnly: useAge,
-                              controller: sleepCycleDurationController,
-                              keyboardType: TextInputType.number, // Numeric keyboard
-                              inputFormatters: [
-                                FilteringTextInputFormatter.digitsOnly,
-                              ],
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 20,
-                                color: Colors.white54,
-                              ),
-                              decoration: InputDecoration(
-                                filled: true,
-                                fillColor: Colors.blueGrey,
-                                hintText: 'Enter Cycle Duration',
-                                enabledBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(12.0),
-                                  borderSide: BorderSide(
-                                    color: Colors.white30, // Border color when not focused
-                                    width: 2.0,
-                                  ),
-                                ),
-                                focusedBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(12.0),
-                                  borderSide: BorderSide(
-                                    color: Colors.white30, // Border color when focused
-                                    width: 2.0,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                          SizedBox(width: 16,),
-                          Container(
-                            width: 100,
-                            height: 60,
-                            child: Align(
-                              alignment: Alignment.bottomLeft,
-                              child: Text(
-                                "Minutes",
-                                style: const TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 25,
-                                  color: Colors.white54,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      SizedBox(height: 15),
-                      Center(
-                        child: ToggleButton(
-                          text: "Determine with Age",
-                          value: useAge,
-                          onChanged: updateUseAge,
-                          width: 300,
-                          height: 30,
-                        ),
-                      )
-                    ],
-                  ),
-                )
               ),
             ),
             Padding(
@@ -524,7 +420,7 @@ class _AlarmSettingsState extends State<AlarmSettings> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Container(
-                            width: 220,
+                            width: 175,
                             height: 60,
                             child: TextField(
                               controller: targetSleepHoursController,
@@ -581,7 +477,7 @@ class _AlarmSettingsState extends State<AlarmSettings> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Container(
-                            width: 220,
+                            width: 175,
                             height: 60,
                             child: TextField(
                               controller: targetSleepMinutesController,
@@ -674,7 +570,7 @@ class _AlarmSettingsState extends State<AlarmSettings> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Container(
-                            width: 220,
+                            width: 175,
                             height: 60,
                             child: TextField(
                               readOnly: !isReminderEnabled,
@@ -762,133 +658,12 @@ class _AlarmSettingsState extends State<AlarmSettings> {
             Padding(
               padding: const EdgeInsets.all(10.0),
               child: Container(
-                height: 200,
-                padding: const EdgeInsets.all(4.0),
-                decoration: BoxDecoration(
-                  border: Border.all(color: Colors.black38, width: 2.0),
-                  borderRadius: BorderRadius.circular(14.0),
-                  color: isSnoozeEnabled ? Color(0xFF123456): Colors.white10,
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withValues(alpha: 0.4),
-                      spreadRadius: 5,
-                      blurRadius: 7,
-                      offset: Offset(0, 3),
-                    ),
-                  ],
-                ),
-                child: Padding(
-                  padding: const EdgeInsets.only(top: 10, left: 15, right: 15),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        "Snooze Interval",
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 25,
-                          color: isSnoozeEnabled ? Colors.white54: Colors.white30,
-                        ),
-                      ),
-                      SizedBox(height: 7,),
-                      Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Container(
-                            width: 220,
-                            height: 60,
-                            child: TextField(
-                              readOnly: !isSnoozeEnabled,
-                              controller: snoozeTimeController,
-                              keyboardType: TextInputType.number, // Numeric keyboard
-                              inputFormatters: [
-                                FilteringTextInputFormatter.digitsOnly,
-                              ],
-                              style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 20,
-                                color: Colors.white54,
-                              ),
-                              decoration: InputDecoration(
-                                filled: true,
-                                fillColor: isSnoozeEnabled ? Colors.blueGrey: Colors.white30,
-                                hintText: 'Enter Minutes',
-                                enabledBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(12.0),
-                                  borderSide: BorderSide(
-                                    color: Colors.white30, // Border color when not focused
-                                    width: 2.0,
-                                  ),
-                                ),
-                                focusedBorder: OutlineInputBorder(
-                                  borderRadius: BorderRadius.circular(12.0),
-                                  borderSide: BorderSide(
-                                    color: Colors.white30, // Border color when focused
-                                    width: 2.0,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ),
-                          SizedBox(width: 16,),
-                          SizedBox(
-                            width: 100,
-                            height: 60,
-                            child: Align(
-                              alignment: Alignment.bottomLeft,
-                              child: Text(
-                                "Minutes",
-                                style: TextStyle(
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 25,
-                                  color: isSnoozeEnabled ? Colors.white54: Colors.white30,
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      SizedBox(height: 25),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            isSnoozeEnabled ? "Enabled": "Disabled",
-                            style: TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 25,
-                              color: isSnoozeEnabled ? Colors.white54: Colors.white30,
-                            ),
-                          ),
-                          SizedBox(width: 10,),
-                          Switch(
-                            value: isSnoozeEnabled,
-                            onChanged: (value) {
-                              setState(() {
-                                isSnoozeEnabled = value;
-                              });
-                            },
-                            activeColor: Colors.white, // Color of the switch handle when on
-                            activeTrackColor: Colors.blueGrey, // Background color when switch is on
-                            inactiveTrackColor: Colors.white10, // Background color when switch is off
-                            inactiveThumbColor: Colors.black87, // Color of the switch handle when off
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(10.0),
-              child: Container(
                 height: 100,
                 padding: const EdgeInsets.all(4.0),
                 decoration: BoxDecoration(
                   border: Border.all(color: Colors.black38, width: 2.0),
                   borderRadius: BorderRadius.circular(14.0),
-                  color: isSnoozeEnabled ? Color(0xFF123456): Colors.white10,
+                  color: Color(0xFF123456),
                   boxShadow: [
                     BoxShadow(
                       color: Colors.black.withValues(alpha: 0.4),
@@ -968,7 +743,7 @@ class _ToggleButtonState extends State<ToggleButton> {
         textAlign: TextAlign.left,
         style: TextStyle(
           fontWeight: FontWeight.bold,
-          fontSize: 15,
+          fontSize: 12,
           color: widget.value ? Color(0xFFC6C0C0): Colors.white30,
         ),
       ),

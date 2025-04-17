@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 import 'package:night_owl/home_screen.dart';
 import 'package:night_owl/login.dart';
@@ -15,6 +16,23 @@ class GreetingPage extends StatefulWidget {
 class _State extends State<GreetingPage> {
 
   @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    checkAndroidScheduleExactAlarmPermission();
+  }
+
+  Future<void> checkAndroidScheduleExactAlarmPermission() async {
+    final status = await Permission.scheduleExactAlarm.status;
+    print('Schedule exact alarm permission: $status.');
+    if (status.isDenied) {
+      print('Requesting schedule exact alarm permission...');
+      final res = await Permission.scheduleExactAlarm.request();
+      print('Schedule exact alarm permission ${res.isGranted ? '' : 'not'} granted.');
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
@@ -26,23 +44,24 @@ class _State extends State<GreetingPage> {
             shrinkWrap: true,
             padding: const EdgeInsets.all(20.0),
             children: [
+              SizedBox(height: 10),
               const Text(
                 "Night Owl",
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontFamily: 'Pacifico',
                   fontWeight: FontWeight.bold,
-                  fontSize: 75,
+                  fontSize: 65,
                   color: Colors.white70,
                 ),
               ),
-              SizedBox(height: 20),
+              SizedBox(height: 10),
               Image.asset(
                 "assets/NightOwlLogo.png",
                 width: 300,
                 height: 300,
               ),
-              SizedBox(height: 80),
+              SizedBox(height: 20),
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   minimumSize: const Size(300,100),

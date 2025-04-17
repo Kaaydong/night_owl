@@ -4,6 +4,9 @@ import 'package:night_owl/user_settings.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
+import 'dart:async';
+import 'package:alarm/alarm.dart';
+
 class HomeScreen extends StatefulWidget {
   final bool isFirstLogin;
 
@@ -26,6 +29,14 @@ class _HomeScreenState extends State<HomeScreen> {
   late int birthdayMonth;
   late int birthdayYear;
   late bool twentyFourHourEnabled;
+
+  int generalAlarmCounter = 0;
+
+  int returnGeneralAlarmCounter(){
+    generalAlarmCounter++;
+
+    return generalAlarmCounter;
+  }
 
   void createUserSettings(String userId) async{
     setState(() {
@@ -166,7 +177,7 @@ class _HomeScreenState extends State<HomeScreen> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => AlarmSettings(
+                            builder: (context) => AlarmOptions(
                               userId: uid,
                               alarmId: "-1",
                               order: count+1,
@@ -201,6 +212,7 @@ class _HomeScreenState extends State<HomeScreen> {
               for (var alarm in alarmList)
                 TimerItem(
                   userId: uid,
+                  generalAlarmId: returnGeneralAlarmCounter(),
                   alarmId: '${alarm.id}',
                   order: alarm.data()["order"],
                   isEnabled: alarm.data()['isEnabled'],
@@ -236,6 +248,7 @@ class _HomeScreenState extends State<HomeScreen> {
 // Child Stateful Widget
 class TimerItem extends StatefulWidget {
   final String userId;
+  final int generalAlarmId;
   final String alarmId;
   final int order;
   final bool isEnabled;
@@ -263,6 +276,7 @@ class TimerItem extends StatefulWidget {
   const TimerItem({
     super.key,
     required this.userId,
+    required this.generalAlarmId,
     required this.alarmId,
     required this.order,
     required this.isEnabled,
@@ -299,6 +313,107 @@ class _TimerItemState extends State<TimerItem> {
   void initState() {
     super.initState();
     isSwitched = widget.isEnabled; // Set the initial switch state
+
+    if(widget.isEnabled){
+      enableAlarms();
+    }
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+    disableAlarms();
+  }
+
+  void enableAlarms() {
+    int gen = widget.generalAlarmId * 10;
+    DateTime alarmTime = DateTime(
+      DateTime.now().year,
+      DateTime.now().month,
+      DateTime.now().day,
+      widget.hour,
+      widget.minute,
+    );
+    int daysUntilMonday = (DateTime.monday - DateTime.now().weekday + 7) % 7;
+    int daysUntilTuesday = (DateTime.tuesday - DateTime.now().weekday + 7) % 7;
+    int daysUntilWednesday = (DateTime.wednesday - DateTime.now().weekday + 7) % 7;
+    int daysUntilThursday = (DateTime.thursday - DateTime.now().weekday + 7) % 7;
+    int daysUntilFriday = (DateTime.friday - DateTime.now().weekday + 7) % 7;
+    int daysUntilSaturday = (DateTime.saturday - DateTime.now().weekday + 7) % 7;
+    int daysUntilSunday = (DateTime.sunday - DateTime.now().weekday + 7) % 7;
+
+    if(widget.mon){
+      createAlarm(gen + 1, alarmTime.add(Duration(days: daysUntilMonday)));
+    }
+    if(widget.tue){
+      createAlarm(gen + 2, alarmTime.add(Duration(days: daysUntilTuesday)));
+    }
+    if(widget.wed){
+      createAlarm(gen + 3, alarmTime.add(Duration(days: daysUntilWednesday)));
+    }
+    if(widget.thu){
+      createAlarm(gen + 4, alarmTime.add(Duration(days: daysUntilThursday)));
+    }
+    if(widget.fri){
+      createAlarm(gen + 5, alarmTime.add(Duration(days: daysUntilFriday)));
+    }
+    if(widget.sat) {
+      createAlarm(gen + 6, alarmTime.add(Duration(days: daysUntilSaturday)));
+    }
+    if(widget.sun){
+      createAlarm(gen + 7, alarmTime.add(Duration(days: daysUntilSunday)));
+    }
+  }
+
+  void disableAlarms() async {
+    int gen = widget.generalAlarmId * 10;
+    if(widget.mon){
+      await Alarm.stop(gen + 1);
+    }
+    if(widget.tue){
+      await Alarm.stop(gen + 2);
+    }
+    if(widget.wed){
+      await Alarm.stop(gen + 3);
+    }
+    if(widget.thu){
+      await Alarm.stop(gen + 4);
+    }
+    if(widget.fri){
+      await Alarm.stop(gen + 5);
+    }
+    if(widget.sat) {
+      await Alarm.stop(gen + 6);
+    }
+    if(widget.sun){
+      await Alarm.stop(gen + 7);
+    }
+  }
+
+  Future<void> createAlarm(int number, dateTime) async {
+    final alarmSettings = AlarmSettings(
+      id: number,
+      dateTime: dateTime,
+      assetAudioPath: "assets/alarm.mp3",
+      loopAudio: true,
+      vibrate: true,
+      androidFullScreenIntent: false,
+      volumeSettings: VolumeSettings.fade(
+        volume: 0.8,
+        fadeDuration: Duration(seconds: 5),
+        volumeEnforced: true,
+      ),
+      notificationSettings: const NotificationSettings(
+        title: 'WAKE UP WAKE UP',
+        body: 'Alarm Trigger for 5:20',
+        stopButton: 'Turn Off Alarm',
+        icon: 'notification_icon',
+        iconColor: Color(0xff1b6598),
+      ),
+    );
+
+    await Alarm.set(alarmSettings: alarmSettings);
   }
 
   String getFormattedTime() {
@@ -359,7 +474,7 @@ class _TimerItemState extends State<TimerItem> {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => AlarmSettings(
+            builder: (context) => AlarmOptions(
               userId: widget.userId,
               alarmId: widget.alarmId,
               order: widget.order,
@@ -409,7 +524,7 @@ class _TimerItemState extends State<TimerItem> {
           child: Row(
             children: [
               Container(
-                width: 280,
+                width: 235,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
@@ -418,7 +533,7 @@ class _TimerItemState extends State<TimerItem> {
                       textAlign: TextAlign.left,
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
-                        fontSize: 60,
+                        fontSize: 52,
                         color: isSwitched ? Color(0xFFC6C0C0): Colors.white30,
                       ),
                     ),
@@ -427,7 +542,7 @@ class _TimerItemState extends State<TimerItem> {
                       textAlign: TextAlign.left,
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
-                        fontSize: 20,
+                        fontSize: 17,
                         color: isSwitched ? Colors.white30: Colors.black54,
                       ),
                     ),
@@ -448,6 +563,13 @@ class _TimerItemState extends State<TimerItem> {
                         .collection("timers")
                         .doc(widget.alarmId.toString())
                         .update({"isEnabled": value});
+
+                    if(value){
+                      enableAlarms();
+                    }
+                    else {
+                      disableAlarms();
+                    }
                   },
                   activeColor: Colors.white, // Color of the switch handle when on
                   activeTrackColor: Colors.blueGrey, // Background color when switch is on

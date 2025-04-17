@@ -88,6 +88,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset : false,
       appBar: AppBar(
         title: const Text(
           "Night Owl",
@@ -111,7 +112,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
           key: _formkey,
           child: Column(
             children: [
-              SizedBox(height: 100,),
+              SizedBox(height: 30,),
               const Text(
                 "Welcome!\nRegister Here",
                 textAlign: TextAlign.center,

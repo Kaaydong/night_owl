@@ -1,3 +1,4 @@
+import 'package:alarm/alarm.dart';
 import 'package:flutter/material.dart';
 import 'package:night_owl/greeting_page.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -8,6 +9,10 @@ void main() async{
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
+
+  WidgetsFlutterBinding.ensureInitialized();
+  await Alarm.init();
+
   runApp(MyApp());
 }
 

@@ -39,6 +39,8 @@ dependencies:
   cloud_firestore: ^5.6.5
   firebase_auth: ^5.5.1
   alarm: ^5.1.2
+  permission_handler: ^12.0.0+1
+  flutter_launcher_icons: ^0.14.3
 
 dev_dependencies:
   flutter_test:
@@ -65,6 +67,8 @@ flutter:
   # To add assets to your application, add an assets section, like this:
   assets:
      - assets/NightOwlLogo.png
+     - assets/alarm.mp3
+     - assets/NightOwlIcon.png
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/to/resolution-aware-images

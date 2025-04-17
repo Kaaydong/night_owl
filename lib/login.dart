@@ -57,6 +57,7 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset : false,
       appBar: AppBar(
         title: const Text(
           "Night Owl",
@@ -80,7 +81,7 @@ class _LoginScreenState extends State<LoginScreen> {
           key: _formkey,
           child: Column(
             children: [
-              SizedBox(height: 100,),
+              SizedBox(height: 30,),
               const Text(
                 "Welcome!\nRegister Here",
                 textAlign: TextAlign.center,

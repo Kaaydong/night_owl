@@ -265,7 +265,7 @@ class _UserProfileState extends State<UserProfile> {
         child: Row(
           children: [
             SizedBox(
-              width: 370,
+              width: 310,
               child: Padding(
                 padding: const EdgeInsets.all(8.0),
                 child: Column(
@@ -276,7 +276,7 @@ class _UserProfileState extends State<UserProfile> {
                       textAlign: TextAlign.left,
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
-                        fontSize: 40,
+                        fontSize: 35,
                         color: Colors.white30,
                       ),
                     ),
@@ -285,7 +285,7 @@ class _UserProfileState extends State<UserProfile> {
                       readOnly: true,
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
-                        fontSize: 25,
+                        fontSize: 20,
                         color: Colors.white54,
                       ),
                       decoration: InputDecoration(
@@ -314,7 +314,7 @@ class _UserProfileState extends State<UserProfile> {
                       textAlign: TextAlign.left,
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
-                        fontSize: 40,
+                        fontSize: 35,
                         color: Colors.white30,
                       ),
                     ),
@@ -396,7 +396,7 @@ class _TwentyFourHourSelectorState extends State<TwentyFourHourSelector> {
                     ),
                   ),
                   Padding(
-                    padding: const EdgeInsets.only(left: 90),
+                    padding: const EdgeInsets.only(left: 45),
                     child: Switch(
                       value: isSwitched,
                       onChanged: (value) {
