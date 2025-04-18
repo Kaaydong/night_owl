@@ -239,6 +239,15 @@ class _AlarmOptionsState extends State<AlarmOptions> {
       .set(userInfoMap);
   }
 
+  String formatTimeOfDay(TimeOfDay tod, BuildContext context) {
+    final localizations = MaterialLocalizations.of(context);
+    return localizations.formatTimeOfDay(tod, alwaysUse24HourFormat: use24HourTime);
+  }
+
+  String getTimeFormatted(){
+    return formatTimeOfDay(selectedTime!, context);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -306,7 +315,7 @@ class _AlarmOptionsState extends State<AlarmOptions> {
                           ),
                         ),
                         child: Text(
-                          selectedTime == null ? TimeOfDay.now().format(context) : selectedTime!.format(context),
+                          getTimeFormatted(),
                           style: const TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 50,
@@ -346,7 +355,14 @@ class _AlarmOptionsState extends State<AlarmOptions> {
                                     ),
                                   ),
                                 ),
-                                child: child!,
+                                child: Directionality(
+                                  textDirection: textDirection,
+                                  child: MediaQuery(
+                                    data: MediaQuery.of(context,
+                                    ).copyWith(alwaysUse24HourFormat: use24HourTime),
+                                    child: child!,
+                                  )
+                                ),
                               );
                             },
                           );

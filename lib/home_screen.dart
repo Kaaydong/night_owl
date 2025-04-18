@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:night_owl/alarm_settings.dart';
 import 'package:night_owl/user_settings.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -328,6 +329,8 @@ class _TimerItemState extends State<TimerItem> {
 
   void enableAlarms() {
     int gen = widget.generalAlarmId * 10;
+    int notiGen = widget.generalAlarmId * 10000;
+
     DateTime alarmTime = DateTime(
       DateTime.now().year,
       DateTime.now().month,
@@ -335,6 +338,18 @@ class _TimerItemState extends State<TimerItem> {
       widget.hour,
       widget.minute,
     );
+
+    DateTime notificationTime = DateTime(
+      DateTime.now().year,
+      DateTime.now().month,
+      DateTime.now().day,
+      widget.hour,
+      widget.minute,
+    );
+    notificationTime = notificationTime.subtract(Duration(minutes: widget.targetSleepMinutes));
+    notificationTime = notificationTime.subtract(Duration(hours: widget.targetSleepHours));
+    notificationTime = notificationTime.subtract(Duration(minutes: widget.minutesToSleep));
+
     int daysUntilMonday = (DateTime.monday - DateTime.now().weekday + 7) % 7;
     int daysUntilTuesday = (DateTime.tuesday - DateTime.now().weekday + 7) % 7;
     int daysUntilWednesday = (DateTime.wednesday - DateTime.now().weekday + 7) % 7;
@@ -343,55 +358,101 @@ class _TimerItemState extends State<TimerItem> {
     int daysUntilSaturday = (DateTime.saturday - DateTime.now().weekday + 7) % 7;
     int daysUntilSunday = (DateTime.sunday - DateTime.now().weekday + 7) % 7;
 
+    // Prevents alarm from activating too early
+    if (daysUntilMonday == 0 && DateTime.now().isAfter(alarmTime)){
+      daysUntilMonday = 7;
+    }
+    else if (daysUntilTuesday == 0 && DateTime.now().isAfter(alarmTime)){
+      daysUntilTuesday = 7;
+    }
+    else if (daysUntilWednesday == 0 && DateTime.now().isAfter(alarmTime)){
+      daysUntilWednesday = 7;
+    }
+    else if (daysUntilThursday == 0 && DateTime.now().isAfter(alarmTime)){
+      daysUntilThursday = 7;
+    }
+    else if (daysUntilFriday == 0 && DateTime.now().isAfter(alarmTime)){
+      daysUntilFriday = 7;
+    }
+    else if (daysUntilSaturday == 0 && DateTime.now().isAfter(alarmTime)){
+      daysUntilSaturday = 7;
+    }
+    else if (daysUntilSunday == 0 && DateTime.now().isAfter(alarmTime)) {
+      daysUntilSunday = 7;
+    }
+
     if(widget.mon){
       createAlarm(gen + 1, alarmTime.add(Duration(days: daysUntilMonday)));
+      if(widget.isReminderEnabled) createNotification(notiGen + 1, notificationTime.add(Duration(days: daysUntilMonday)));
     }
     if(widget.tue){
       createAlarm(gen + 2, alarmTime.add(Duration(days: daysUntilTuesday)));
+      if(widget.isReminderEnabled) createNotification(notiGen + 2, notificationTime.add(Duration(days: daysUntilTuesday)));
     }
     if(widget.wed){
       createAlarm(gen + 3, alarmTime.add(Duration(days: daysUntilWednesday)));
+      if(widget.isReminderEnabled) createNotification(notiGen + 3, notificationTime.add(Duration(days: daysUntilWednesday)));
     }
     if(widget.thu){
       createAlarm(gen + 4, alarmTime.add(Duration(days: daysUntilThursday)));
+      if(widget.isReminderEnabled) createNotification(notiGen + 4, notificationTime.add(Duration(days: daysUntilThursday)));
     }
     if(widget.fri){
       createAlarm(gen + 5, alarmTime.add(Duration(days: daysUntilFriday)));
+      if(widget.isReminderEnabled) createNotification(notiGen + 5, notificationTime.add(Duration(days: daysUntilFriday)));
     }
     if(widget.sat) {
       createAlarm(gen + 6, alarmTime.add(Duration(days: daysUntilSaturday)));
+      if(widget.isReminderEnabled) createNotification(notiGen + 6, notificationTime.add(Duration(days: daysUntilSaturday)));
     }
     if(widget.sun){
       createAlarm(gen + 7, alarmTime.add(Duration(days: daysUntilSunday)));
+      if(widget.isReminderEnabled) createNotification(notiGen + 7, notificationTime.add(Duration(days: daysUntilSunday)));
     }
   }
 
   void disableAlarms() async {
     int gen = widget.generalAlarmId * 10;
+    int notiGen = widget.generalAlarmId * 10000;
     if(widget.mon){
       await Alarm.stop(gen + 1);
+      await Alarm.stop(notiGen + 1);
     }
     if(widget.tue){
       await Alarm.stop(gen + 2);
+      await Alarm.stop(notiGen + 2);
     }
     if(widget.wed){
       await Alarm.stop(gen + 3);
+      await Alarm.stop(notiGen + 3);
     }
     if(widget.thu){
       await Alarm.stop(gen + 4);
+      await Alarm.stop(notiGen + 4);
     }
     if(widget.fri){
       await Alarm.stop(gen + 5);
+      await Alarm.stop(notiGen + 5);
     }
     if(widget.sat) {
       await Alarm.stop(gen + 6);
+      await Alarm.stop(notiGen + 6);
     }
     if(widget.sun){
       await Alarm.stop(gen + 7);
+      await Alarm.stop(notiGen + 7);
     }
   }
 
-  Future<void> createAlarm(int number, dateTime) async {
+  Future<void> createAlarm(int number, DateTime dateTime) async {
+    String notificationString = "";
+    if(widget.is24Hour){
+      notificationString = DateFormat('HH:mm').format(dateTime);
+    }
+    else{
+      notificationString = DateFormat('hh:mm a').format(dateTime);
+    }
+
     final alarmSettings = AlarmSettings(
       id: number,
       dateTime: dateTime,
@@ -400,14 +461,47 @@ class _TimerItemState extends State<TimerItem> {
       vibrate: true,
       androidFullScreenIntent: false,
       volumeSettings: VolumeSettings.fade(
-        volume: 0.8,
+        volume: 1.0,
         fadeDuration: Duration(seconds: 5),
         volumeEnforced: true,
       ),
-      notificationSettings: const NotificationSettings(
+      notificationSettings: NotificationSettings(
         title: 'WAKE UP WAKE UP',
-        body: 'Alarm Trigger for 5:20',
+        body: 'Alarm Trigger for $notificationString',
         stopButton: 'Turn Off Alarm',
+        icon: 'notification_icon',
+        iconColor: Color(0xff1b6598),
+      ),
+    );
+
+    await Alarm.set(alarmSettings: alarmSettings);
+  }
+
+  Future<void> createNotification(int number, dateTime) async {
+    String notificationString = widget.minutesToSleep.toString();
+    if (notificationString == '1'){
+      notificationString = '1 minute';
+    }
+    else{
+      notificationString = '$notificationString minutes';
+    }
+
+    final alarmSettings = AlarmSettings(
+      id: number,
+      dateTime: dateTime,
+      assetAudioPath: "assets/alarm.mp3",
+      loopAudio: false,
+      vibrate: true,
+      androidFullScreenIntent: false,
+      volumeSettings: VolumeSettings.fade(
+        volume: 0.5,
+        fadeDuration: Duration(seconds: 5),
+        volumeEnforced: false,
+      ),
+      notificationSettings: NotificationSettings(
+        title: 'Time To Go To Sleep',
+        body: '$notificationString before sleepy time',
+        stopButton: 'Turn Off Notification',
         icon: 'notification_icon',
         iconColor: Color(0xff1b6598),
       ),
