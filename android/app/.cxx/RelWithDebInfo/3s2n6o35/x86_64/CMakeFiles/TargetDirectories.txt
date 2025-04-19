@@ -1,0 +1,2 @@
+D:/Android_Projects/night_owl/android/app/.cxx/RelWithDebInfo/3s2n6o35/x86_64/CMakeFiles/edit_cache.dir
+D:/Android_Projects/night_owl/android/app/.cxx/RelWithDebInfo/3s2n6o35/x86_64/CMakeFiles/rebuild_cache.dir

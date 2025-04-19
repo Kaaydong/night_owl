@@ -193,13 +193,19 @@ class _AlarmOptionsState extends State<AlarmOptions> {
       "sat": sat,
       "sun": sun,
       "useAge": useAge,
-      "sleepCycle": int.parse(sleepCycleDurationController.text),
-      "targetSleepHours": int.parse(targetSleepHoursController.text),
-      "targetSleepMinutes": int.parse(targetSleepMinutesController.text),
+      "sleepCycle": 69, //int.parse(sleepCycleDurationController.text),
+      "targetSleepHours": int.parse(
+          targetSleepHoursController.text == "" ? "7" : targetSleepHoursController.text
+      ),
+      "targetSleepMinutes": int.parse(
+          targetSleepMinutesController.text == "" ? "30" : targetSleepMinutesController.text
+      ),
       "isReminderEnabled": isReminderEnabled,
-      "minutesToSleep": int.parse(minutesToSleepController.text),
-      "isSnoozeEnabled": isSnoozeEnabled,
-      "snoozeInterval": int.parse(snoozeTimeController.text),
+      "minutesToSleep": int.parse(
+          minutesToSleepController.text == "" ? "20" : minutesToSleepController.text
+      ),
+      "isSnoozeEnabled": false,//isSnoozeEnabled,
+      "snoozeInterval": 69,//int.parse(snoozeTimeController.text),
     };
 
     if(widget.alarmId == "-1"){
@@ -245,7 +251,7 @@ class _AlarmOptionsState extends State<AlarmOptions> {
   }
 
   String getTimeFormatted(){
-    return formatTimeOfDay(selectedTime!, context);
+    return formatTimeOfDay(selectedTime ?? TimeOfDay.now(), context);
   }
 
   @override
