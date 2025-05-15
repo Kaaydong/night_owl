@@ -307,7 +307,7 @@ class _AlarmOptionsState extends State<AlarmOptions> {
                         "Alarm Settings",
                         style: const TextStyle(
                           fontWeight: FontWeight.bold,
-                          fontSize: 25,
+                          fontSize: 22,
                           color: Colors.white54,
                         ),
                       ),
@@ -324,7 +324,7 @@ class _AlarmOptionsState extends State<AlarmOptions> {
                           getTimeFormatted(),
                           style: const TextStyle(
                             fontWeight: FontWeight.bold,
-                            fontSize: 50,
+                            fontSize: 44,
                             color: Colors.white54,
                           ),
                         ),
@@ -340,11 +340,11 @@ class _AlarmOptionsState extends State<AlarmOptions> {
                                   timePickerTheme: TimePickerThemeData(
                                     dayPeriodColor: Colors.blueGrey,
                                     hourMinuteTextStyle: TextStyle(
-                                      fontSize: 48,
+                                      fontSize: 42,
                                       fontWeight: FontWeight.bold,
                                     ),
                                     helpTextStyle: TextStyle(
-                                      fontSize: 18,
+                                      fontSize: 14,
                                       fontWeight: FontWeight.bold,
                                       color: Colors.blueGrey, // Change "Enter Time" text color
                                     ),
@@ -433,7 +433,7 @@ class _AlarmOptionsState extends State<AlarmOptions> {
                         "Target Sleep Amount",
                         style: const TextStyle(
                           fontWeight: FontWeight.bold,
-                          fontSize: 25,
+                          fontSize: 22,
                           color: Colors.white54,
                         ),
                       ),
@@ -452,7 +452,7 @@ class _AlarmOptionsState extends State<AlarmOptions> {
                               ],
                               style: TextStyle(
                                 fontWeight: FontWeight.bold,
-                                fontSize: 20,
+                                fontSize: 16,
                                 color: Colors.white54,
                               ),
                               decoration: InputDecoration(
@@ -486,7 +486,7 @@ class _AlarmOptionsState extends State<AlarmOptions> {
                                 "Hours",
                                 style: const TextStyle(
                                   fontWeight: FontWeight.bold,
-                                  fontSize: 25,
+                                  fontSize: 22,
                                   color: Colors.white54,
                                 ),
                               ),
@@ -509,7 +509,7 @@ class _AlarmOptionsState extends State<AlarmOptions> {
                               ],
                               style: TextStyle(
                                 fontWeight: FontWeight.bold,
-                                fontSize: 20,
+                                fontSize: 16,
                                 color: Colors.white54,
                               ),
                               decoration: InputDecoration(
@@ -543,7 +543,7 @@ class _AlarmOptionsState extends State<AlarmOptions> {
                                 "Minutes",
                                 style: TextStyle(
                                   fontWeight: FontWeight.bold,
-                                  fontSize: 25,
+                                  fontSize: 22,
                                   color: Colors.white54,
                                 ),
                               ),
@@ -583,7 +583,7 @@ class _AlarmOptionsState extends State<AlarmOptions> {
                         "Go-To Sleep Reminder",
                         style: TextStyle(
                           fontWeight: FontWeight.bold,
-                          fontSize: 25,
+                          fontSize: 22,
                           color: isReminderEnabled ? Colors.white54: Colors.white30,
                         ),
                       ),
@@ -603,7 +603,7 @@ class _AlarmOptionsState extends State<AlarmOptions> {
                               ],
                               style: TextStyle(
                                 fontWeight: FontWeight.bold,
-                                fontSize: 20,
+                                fontSize: 16,
                                 color: Colors.white54,
                               ),
                               decoration: InputDecoration(
@@ -637,7 +637,7 @@ class _AlarmOptionsState extends State<AlarmOptions> {
                                 "Minutes",
                                 style: TextStyle(
                                   fontWeight: FontWeight.bold,
-                                  fontSize: 25,
+                                  fontSize: 22,
                                   color: isReminderEnabled ? Colors.white54: Colors.white30,
                                 ),
                               ),
@@ -653,7 +653,7 @@ class _AlarmOptionsState extends State<AlarmOptions> {
                             isReminderEnabled ? "Enabled": "Disabled",
                             style: TextStyle(
                               fontWeight: FontWeight.bold,
-                              fontSize: 25,
+                              fontSize: 22,
                               color: isReminderEnabled ? Colors.white54: Colors.white30,
                             ),
                           ),
@@ -711,7 +711,7 @@ class _AlarmOptionsState extends State<AlarmOptions> {
                       textAlign: TextAlign.left,
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
-                        fontSize: 24,
+                        fontSize: 22,
                         color: Color(0xFFC6C0C0),
                       ),
                     ),
@@ -765,7 +765,7 @@ class _ToggleButtonState extends State<ToggleButton> {
         textAlign: TextAlign.left,
         style: TextStyle(
           fontWeight: FontWeight.bold,
-          fontSize: 12,
+          fontSize: 10,
           color: widget.value ? Color(0xFFC6C0C0): Colors.white30,
         ),
       ),

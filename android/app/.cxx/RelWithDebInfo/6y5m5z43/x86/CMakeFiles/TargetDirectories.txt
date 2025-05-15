@@ -1,0 +1,2 @@
+C:/Users/gippy/Desktop/night_owl/android/app/.cxx/RelWithDebInfo/6y5m5z43/x86/CMakeFiles/edit_cache.dir
+C:/Users/gippy/Desktop/night_owl/android/app/.cxx/RelWithDebInfo/6y5m5z43/x86/CMakeFiles/rebuild_cache.dir

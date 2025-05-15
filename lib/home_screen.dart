@@ -23,7 +23,7 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   var alarmList = [];
   int count = 0;
-  late User user;
+  //late User user;
   late String uid;
   late String email;
   late int birthdayDay;
@@ -102,10 +102,13 @@ class _HomeScreenState extends State<HomeScreen> {
   void initState() {
     super.initState();
 
-    final FirebaseAuth auth = FirebaseAuth.instance;
-    user = auth.currentUser!;
-    uid = user.uid;
-    email = user.email!;
+    //final FirebaseAuth auth = FirebaseAuth.instance;
+    //user = auth.currentUser!;
+    //uid = user.uid;
+    //email = user.email!;
+
+    uid = "MqevGlkoy3NThB0p6uHkYgHHNL63";
+    email = "example.com";
 
     if (widget.isFirstLogin){
       createUserSettings(uid);
@@ -627,7 +630,7 @@ class _TimerItemState extends State<TimerItem> {
                       textAlign: TextAlign.left,
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
-                        fontSize: 52,
+                        fontSize: 48,
                         color: isSwitched ? Color(0xFFC6C0C0): Colors.white30,
                       ),
                     ),
@@ -636,7 +639,7 @@ class _TimerItemState extends State<TimerItem> {
                       textAlign: TextAlign.left,
                       style: TextStyle(
                         fontWeight: FontWeight.bold,
-                        fontSize: 17,
+                        fontSize: 14,
                         color: isSwitched ? Colors.white30: Colors.black54,
                       ),
                     ),

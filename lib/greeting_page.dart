@@ -61,7 +61,7 @@ class _State extends State<GreetingPage> {
                 width: 300,
                 height: 300,
               ),
-              SizedBox(height: 20),
+              SizedBox(height: 60),
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   minimumSize: const Size(300,100),
@@ -73,12 +73,13 @@ class _State extends State<GreetingPage> {
                       context,
                       MaterialPageRoute(
                           builder: (context){
-                            return LoginScreen();
+                            return HomeScreen(isFirstLogin: false,);
+                            //return LoginScreen();
                           })
                   );
                 },
                 child: Text(
-                  "Login".toUpperCase(),
+                  "Enter".toUpperCase(),
                   style: const TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 30,
@@ -86,31 +87,31 @@ class _State extends State<GreetingPage> {
                   ),
                 ),
               ),
-              SizedBox(height: 30),
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  minimumSize: const Size(300,100),
-                  backgroundColor: Color(0xFF123456),
-                  elevation: 20, // Shadow elevation
-                ),
-                onPressed: (){
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context){
-                            return RegisterScreen();
-                          })
-                  );
-                },
-                child: Text(
-                  "Register".toUpperCase(),
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 30,
-                    color: Colors.white,
-                  ),
-                ),
-              ),
+              // SizedBox(height: 30),
+              // ElevatedButton(
+              //   style: ElevatedButton.styleFrom(
+              //     minimumSize: const Size(300,100),
+              //     backgroundColor: Color(0xFF123456),
+              //     elevation: 20, // Shadow elevation
+              //   ),
+              //   onPressed: (){
+              //     Navigator.push(
+              //         context,
+              //         MaterialPageRoute(
+              //             builder: (context){
+              //               return RegisterScreen();
+              //             })
+              //     );
+              //   },
+              //   child: Text(
+              //     "Register".toUpperCase(),
+              //     style: const TextStyle(
+              //       fontWeight: FontWeight.bold,
+              //       fontSize: 30,
+              //       color: Colors.white,
+              //     ),
+              //   ),
+              // ),
             ],
           ),
         )

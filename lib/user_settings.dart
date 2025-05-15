@@ -61,66 +61,66 @@ class _UserSettingsState extends State<UserSettings> {
           child: ListView(
             scrollDirection: Axis.vertical,
             children: [
-              UserProfile(
-                  uid: widget.uid,
-                  username: widget.email,
-                  birthdayDay: widget.birthdayDay,
-                  birthdayMonth: widget.birthdayMonth,
-                  birthdayYear: widget.birthdayYear,
-              ),
+              // UserProfile(
+              //     uid: widget.uid,
+              //     username: widget.email,
+              //     birthdayDay: widget.birthdayDay,
+              //     birthdayMonth: widget.birthdayMonth,
+              //     birthdayYear: widget.birthdayYear,
+              // ),
               TwentyFourHourSelector(
                   uid: widget.uid,
                   twentyFourHoursEnabled: widget.twentyFourHourEnabled
               ),
-              Padding(
-                padding: const EdgeInsets.all(10.0),
-                child: Container(
-                  height: 100,
-                  padding: const EdgeInsets.all(4.0),
-                  decoration: BoxDecoration(
-                    border: Border.all(color: Colors.black38, width: 2.0),
-                    borderRadius: BorderRadius.circular(14.0),
-                    color: Color(0xFF123456),
-                    boxShadow: [
-                      BoxShadow(
-                        color: Colors.black.withValues(alpha: 0.4),
-                        spreadRadius: 5,
-                        blurRadius: 7,
-                        offset: Offset(0, 3),
-                      ),
-                    ],
-                  ),
-                  child: Center(
-                    child: ElevatedButton(
-                      onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => GreetingPage(),
-                          )
-                        );
-                      },
-                      style: ElevatedButton.styleFrom(
-                        fixedSize: Size(350, 65),
-                        backgroundColor: Colors.blueGrey,
-                        padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(90),
-                        ),
-                      ),
-                      child: Text(
-                        "Logout",
-                        textAlign: TextAlign.left,
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 24,
-                          color: Color(0xFFC6C0C0),
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              )
+              // Padding(
+              //   padding: const EdgeInsets.all(10.0),
+              //   child: Container(
+              //     height: 100,
+              //     padding: const EdgeInsets.all(4.0),
+              //     decoration: BoxDecoration(
+              //       border: Border.all(color: Colors.black38, width: 2.0),
+              //       borderRadius: BorderRadius.circular(14.0),
+              //       color: Color(0xFF123456),
+              //       boxShadow: [
+              //         BoxShadow(
+              //           color: Colors.black.withValues(alpha: 0.4),
+              //           spreadRadius: 5,
+              //           blurRadius: 7,
+              //           offset: Offset(0, 3),
+              //         ),
+              //       ],
+              //     ),
+              //     child: Center(
+              //       child: ElevatedButton(
+              //         onPressed: () {
+              //           Navigator.push(
+              //             context,
+              //             MaterialPageRoute(
+              //               builder: (context) => GreetingPage(),
+              //             )
+              //           );
+              //         },
+              //         style: ElevatedButton.styleFrom(
+              //           fixedSize: Size(350, 65),
+              //           backgroundColor: Colors.blueGrey,
+              //           padding: EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+              //           shape: RoundedRectangleBorder(
+              //             borderRadius: BorderRadius.circular(90),
+              //           ),
+              //         ),
+              //         child: Text(
+              //           "Logout",
+              //           textAlign: TextAlign.left,
+              //           style: TextStyle(
+              //             fontWeight: FontWeight.bold,
+              //             fontSize: 24,
+              //             color: Color(0xFFC6C0C0),
+              //           ),
+              //         ),
+              //       ),
+              //     ),
+              //   ),
+              // )
             ],
           ),
         )
@@ -391,7 +391,7 @@ class _TwentyFourHourSelectorState extends State<TwentyFourHourSelector> {
                     textAlign: TextAlign.left,
                     style: TextStyle(
                       fontWeight: FontWeight.bold,
-                      fontSize: 30,
+                      fontSize: 26,
                       color: isSwitched ? Color(0xFFC6C0C0): Colors.white30,
                     ),
                   ),
